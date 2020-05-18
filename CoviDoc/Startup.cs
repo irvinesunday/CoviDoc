@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CoviDoc.Models;
 using CoviDoc.Models.Interfaces;
+using CoviDoc.Models.Mocks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,8 @@ namespace CoviDoc
         {
             services.AddControllersWithViews();
             services.AddSingleton<IPatientRepository, MockPatientRepository>();
+            services.AddSingleton<ITestCentreRepository, MockTestCentreRepository>();
+            services.AddSingleton<ICountyRepository, MockCountyRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

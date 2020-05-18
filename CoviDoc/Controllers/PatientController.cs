@@ -11,7 +11,7 @@ namespace CoviDoc.Controllers
 {
     public class PatientController : Controller
     {
-        IPatientRepository _patientRepository;
+        readonly IPatientRepository _patientRepository;
 
         public PatientController(IPatientRepository patientRepository)
         {

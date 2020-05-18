@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace CoviDoc.Models
+namespace CoviDoc.Models.Mocks
 {
     public class MockPatientRepository : IPatientRepository
     {

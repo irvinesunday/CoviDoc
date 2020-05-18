@@ -7,8 +7,9 @@ namespace CoviDoc.Models
 {
     public class County
     {
-        public string ID { get; set; }
+        public int ID { get; set; }
         public string CountyName { get; set; }
-        public List<Ward> Wards { get; set; }
+        public List<string> Constituencies { get; set; }
+        public List<string> Wards { get; set; }
     }
 }

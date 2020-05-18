@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using static CoviDoc.Models.Enums;
 using JsonConverter = Newtonsoft.Json.JsonConverter;
 
 namespace CoviDoc.Models
@@ -15,11 +16,6 @@ namespace CoviDoc.Models
     /// </summary>
     public class Patient
     {
-        public enum GenderEnums
-        {
-            Male,
-            Female
-        }
         public Guid ID { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -28,10 +24,13 @@ namespace CoviDoc.Models
         public DateTime DoB { get; set; }
 
         [Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
-        public GenderEnums Gender { get; set; }
+        public Gender Gender { get; set; } = Gender.Uknown;
 
         public string Nationality { get; set; }
         public string MobileNumber { get; set; }
+        public string County { get; set; }
+        public string Constitiency { get; set; }
+        public string Ward { get; set; }
         public bool IsAdult { get; set; }
         public bool IsActive { get; set; }
         public DateTime DateRegistered { get; set; }

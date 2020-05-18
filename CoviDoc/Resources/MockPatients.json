@@ -9,6 +9,9 @@
         "Gender": "Male",
         "Nationality": "Kenya",
         "MobileNumber": "0707555219",
+        "County": "Nairobi",
+        "Constituency": "Westlands",
+        "Ward": "Parklands",
         "IsAdult": "True",
         "IsActive": "True",
         "DateRegistered": "16/05/2020 10:25:10"
@@ -23,6 +26,9 @@
         "Gender": "Female",
         "Nationality": "Kenya",
         "MobileNumber":"0710942575",
+        "County": "Nairobi",
+        "Constituency": "Dagoretti North",
+        "Ward": "Kilimani",
         "IsAdult": "True",
         "IsActive": "True",
         "DateRegistered": "10/05/2020 14:30:11"
@@ -30,15 +36,18 @@
       {
         "ID": "6c5946fe-c17d-4629-b2c0-c3a9a96c4cb5",
         "FirstName": "Matilda",
-        "MiddleName": "Atieno'",
+        "MiddleName": "Atieno",
         "LastName": "Ochanda",
         "IdNumber": "26340560",
         "DoB": "12/12/1984",
         "Gender": "Female",
         "Nationality": "Kenya",
         "MobileNumber":"0726591997",
+        "County": "Nairobi",
+        "Constituency": "Starehe",
+        "Ward": "Nairobi South",
         "IsAdult": "True",
         "IsActive": "True",
         "DateRegistered": "05/05/2020 15:15:12"
-      } 
+      }
 ]

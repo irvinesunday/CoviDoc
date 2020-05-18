@@ -7,10 +7,11 @@ namespace CoviDoc.Models
 {
     public class TestCentre
     {
-        public int ID { get; set; }
+        public Guid ID { get; set; }
         public string Name { get; set; }
-        public int WardId { get; set; }
-        public Ward Ward { get; set; }
+        public string County { get; set; }
+        public string Constituency { get; set; }
+        public string Ward { get; set; }
         public bool IsActive { get; set; }
     }
 }

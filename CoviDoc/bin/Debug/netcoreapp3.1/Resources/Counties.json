@@ -1,0 +1,48 @@
+[
+    {
+        "ID": "47",
+        "CountyName": "Nairobi",
+        "Constituency":
+        [
+            {
+                "Westlands":
+                [
+                    {
+                        "Ward":
+                        [
+                            "Parklands",
+                            "Karura",
+                            "Kangemi"
+                        ]
+                    }
+                ]
+            },
+            {
+                "Dagoretti North":
+                [
+                    {
+                        "Ward":
+                        [
+                            "Kilimani",
+                            "Gatina",
+                            "Kileleshwa"
+                        ]
+                    }
+                ]
+            },
+            {
+                "Starehe":
+                [
+                    {
+                        "Ward":
+                        [
+                            "Nairobi South",
+                            "Landimawe",
+                            "Pangani"
+                        ]
+                    }
+                ]
+            }
+        ]
+      }
+]

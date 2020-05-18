@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace CoviDoc.Models.Interfaces
 {
-    public class IEncounterRepository
+    public interface ICountyRepository
     {
+        List<County> GetCounties();
     }
 }
