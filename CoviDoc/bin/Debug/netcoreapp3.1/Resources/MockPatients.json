@@ -5,7 +5,7 @@
         "MiddleName": "Miki",
         "LastName": "Onyango",
         "IdNumber": "23340530",
-        "DoB": "01/02/1983",
+        "DoB": "01/02/1983 00:00:00",
         "Gender": "Male",
         "Nationality": "Kenya",
         "MobileNumber": "0707555219",
@@ -22,7 +22,7 @@
         "MiddleName": "Achieng'",
         "LastName": "Ochanda",
         "IdNumber": "25340550",
-        "DoB": "03/02/1987",
+        "DoB": "03/02/1987 00:00:00",
         "Gender": "Female",
         "Nationality": "Kenya",
         "MobileNumber":"0710942575",
@@ -36,10 +36,10 @@
       {
         "ID": "6c5946fe-c17d-4629-b2c0-c3a9a96c4cb5",
         "FirstName": "Matilda",
-        "MiddleName": "Atieno'",
+        "MiddleName": "Atieno",
         "LastName": "Ochanda",
         "IdNumber": "26340560",
-        "DoB": "12/12/1984",
+        "DoB": "12/12/1984 00:00:00",
         "Gender": "Female",
         "Nationality": "Kenya",
         "MobileNumber":"0726591997",
@@ -49,5 +49,5 @@
         "IsAdult": "True",
         "IsActive": "True",
         "DateRegistered": "05/05/2020 15:15:12"
-      } 
+      }
 ]

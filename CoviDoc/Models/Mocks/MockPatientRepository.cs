@@ -6,8 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+// using System.Text.Json;
 
 namespace CoviDoc.Models.Mocks
 {
@@ -33,9 +35,23 @@ namespace CoviDoc.Models.Mocks
             }
         }
 
-        public List<Patient> GetPatient(string idNumber)
+        public List<Patient> GetPatients(bool id, string time)
+        {
+            return _patients;
+        }
+
+        public Patient GetPatient(Guid id)
+        {
+            return _patients.FirstOrDefault(p => p.ID.Equals(id));
+        }
+        public List<Patient> GetPatients(string idNumber)
         {
             return _patients.FindAll(p => p.IdNumber.Equals(idNumber)); // patients with matching IdNumbers could be parent/child
+        }
+
+        public List<Patient> GetPatients()
+        {
+            return _patients;
         }
 
         public void TestPatient(Patient patient, Encounter encounter)
@@ -61,7 +77,8 @@ namespace CoviDoc.Models.Mocks
             try
             {
                 string jsonString = ReadFromFile(patientsFilePath).GetAwaiter().GetResult();
-                _patients = JsonConvert.DeserializeObject<List<Patient>>(jsonString, new IsoDateTimeConverter());
+               // _patients = JsonSerializer.Deserialize<List<Patient>>(jsonString);
+                _patients = JsonConvert.DeserializeObject<List<Patient>>(jsonString, new IsoDateTimeConverter ());
             }
             catch (Exception ex)
             {

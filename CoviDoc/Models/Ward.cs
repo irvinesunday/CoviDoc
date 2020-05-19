@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CoviDoc.Models
 {
-    public class Ward
+    public class String
     {
         public int ID { get; set; }
         public string WardName { get; set; }

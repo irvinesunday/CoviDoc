@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,9 +8,21 @@ namespace CoviDoc.Models
 {
     public class County
     {
-        public int ID { get; set; }
+        [JsonProperty("ID")]
+        public int CountyId { get; set; }
+        [JsonProperty("CountyName")]
         public string CountyName { get; set; }
-        public List<string> Constituencies { get; set; }
-        public List<string> Wards { get; set; }
+        [JsonProperty("Constituencies")]
+        public IEnumerable<Constituency> Constituencies { get; set; }
+
+        public class Constituency
+        {
+            [JsonIgnore]
+            public string Constituencyid => ConstituencyName.Replace(" ", string.Empty);
+            [JsonProperty(PropertyName = "ConstituencyName")]
+            public string ConstituencyName { get; set; }
+            [JsonProperty(PropertyName = "Wards")]
+            public string[] Wards { get; set; }
+        }
     }
 }

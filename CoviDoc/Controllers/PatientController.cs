@@ -12,10 +12,13 @@ namespace CoviDoc.Controllers
     public class PatientController : Controller
     {
         readonly IPatientRepository _patientRepository;
+        readonly ITestCentreRepository _testCentreRepository;
 
-        public PatientController(IPatientRepository patientRepository)
+        public PatientController(IPatientRepository patientRepository,
+                                 ITestCentreRepository testCentreRepository)
         {
             _patientRepository = patientRepository;
+            _testCentreRepository = testCentreRepository;
         }
         // GET: Patient
         public ActionResult Index()
@@ -23,13 +26,28 @@ namespace CoviDoc.Controllers
             return View();
         }
 
+        public ActionResult Test(Guid id)
+        {
+            var patient = _patientRepository.GetPatient(id);
+            var patientTestViewModel = new PatientTestViewModel
+            {
+                DoB = patient.DoB,
+                IdNumber = patient.IdNumber,
+                IsAdult = patient.IsAdult,
+                PatientName = $"{patient.FirstName} {patient.MiddleName} {patient.LastName}",
+                TestCentres = _testCentreRepository.GetTestCentres()
+            };
+
+            return View(patientTestViewModel);
+        }
+
         // GET: Patient/Details/5
         [Produces("application/json")]
         [HttpGet]
-        public List<Patient> Details(string idNumber)
+        public JsonResult Details(string id)
         {
-            var results = _patientRepository.GetPatient(idNumber);
-            return results;
+            var results = _patientRepository.GetPatients(id);
+            return Json(results);
            // return View();
         }
 

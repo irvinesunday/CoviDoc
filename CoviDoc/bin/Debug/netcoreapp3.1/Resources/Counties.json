@@ -2,46 +2,77 @@
     {
         "ID": "47",
         "CountyName": "Nairobi",
-        "Constituency":
+        "Constituencies":
         [
             {
-                "Westlands":
-                [
-                    {
-                        "Ward":
+                "ConstituencyName": "Westlands",
+                "Wards":
                         [
                             "Parklands",
                             "Karura",
                             "Kangemi"
                         ]
-                    }
-                ]
             },
             {
-                "Dagoretti North":
-                [
-                    {
-                        "Ward":
+                "ConstituencyName": "Dagoretti North",
+                "Wards":
                         [
                             "Kilimani",
                             "Gatina",
                             "Kileleshwa"
                         ]
-                    }
-                ]
             },
             {
-                "Starehe":
-                [
-                    {
-                        "Ward":
+                "ConstituencyName": "Starehe",
+                "Wards":
                         [
                             "Nairobi South",
                             "Landimawe",
                             "Pangani"
                         ]
-                    }
-                ]
+            }
+        ]
+      },
+      {
+        "ID": "1",
+        "CountyName": "Mombasa",
+        "Constituencies":
+        [
+            {
+                "ConstituencyName": "Changamwe",
+                "Wards":
+                        [
+                            "Kipevu",
+                            "Airport",
+                            "Miritini"
+                        ]
+            },
+            {
+                "ConstituencyName": "Jomvu",
+                "Wards":
+                        [
+                            "Jomvu Kuu",
+                            "Magongo",
+                            "Mikindani"
+                        ]
+            },
+            {
+                "ConstituencyName": "Kisauni",
+                "Wards":
+                        [
+                            "Bamburi",
+                            "Shanzu",
+                            "Mjambere"
+                        ]
+            },
+            {
+                "ConstituencyName": "Nyali",
+                "Wards":
+                        [
+                            "Free Town",
+                            "Mkomani",
+                            "Kongowea"
+                        ]
             }
         ]
       }
