@@ -8,6 +8,7 @@ namespace CoviDoc.Models.Interfaces
 {
     public interface ILocationRepository
     {
+        IEnumerable<SelectListItem> GetCountries();
         IEnumerable<SelectListItem> GetCounties();
         IEnumerable<SelectListItem> GetConstituencies(int countyId);
         IEnumerable<SelectListItem> GetConstituencies();

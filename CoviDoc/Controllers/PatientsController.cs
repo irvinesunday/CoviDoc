@@ -79,6 +79,7 @@ namespace CoviDoc.Controllers
 
             PatientCreateViewModel patientCreateViewModel = new PatientCreateViewModel()
             {
+                Countries = _mockCountyRepository.GetCountries(),
                 Counties = _mockCountyRepository.GetCounties(),
                 Constituencies = _mockCountyRepository.GetConstituencies(),
                 Wards = _mockCountyRepository.GetWards()

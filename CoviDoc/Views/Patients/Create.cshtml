@@ -43,7 +43,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="Patient.Nationality" class="control-label"></label>
-                <input asp-for="Patient.Nationality" class="form-control" />
+                <select asp-for="Patient.Nationality" class="form-control"
+                        asp-items="@(new SelectList(Model.Countries, "Value", "Text"))"></select>
                 <span asp-validation-for="Patient.Nationality" class="text-danger"></span>
             </div>
             <div class="form-group">

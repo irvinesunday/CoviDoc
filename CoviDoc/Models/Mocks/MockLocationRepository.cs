@@ -12,11 +12,32 @@ namespace CoviDoc.Models.Mocks
     public class MockLocationRepository :ILocationRepository
     {
         private const string countiesFilePath = ".//Resources//Counties.json";
-        private List<County> _counties;
+        private const string countriesFilePath = ".//Resources//Countries.json";
+        private List<Location.County> _counties;
+        private string[] _countries;
 
         public MockLocationRepository()
         {
             FetchCounties();
+            FetchCountries();
+        }
+
+        public IEnumerable<SelectListItem> GetCountries()
+        {
+            List<SelectListItem> counties = _countries.OrderBy(n => n)
+                                                     .Select(n =>
+                                                     new SelectListItem
+                                                     {
+                                                         Value = n,
+                                                         Text = n
+                                                     }).ToList();
+            var countyTip = new SelectListItem()
+            {
+                Value = null,
+                Text = "-- Select Country of Nationality --"
+            };
+            counties.Insert(0, countyTip);
+            return new SelectList(counties, "Value", "Text");
         }
 
         public IEnumerable<SelectListItem> GetCounties()
@@ -54,7 +75,7 @@ namespace CoviDoc.Models.Mocks
         {
             if (countyId > 0)
             {
-                County county = _counties.FirstOrDefault(x => x.CountyId == countyId);
+                var county = _counties.FirstOrDefault(x => x.CountyId == countyId);
 
                 if (county != null)
                 {
@@ -89,7 +110,7 @@ namespace CoviDoc.Models.Mocks
         {
             if (countyId > 0 && !string.IsNullOrEmpty(constituencyId))
             {
-                County county = _counties.FirstOrDefault(x => x.CountyId == countyId);
+                var county = _counties.FirstOrDefault(x => x.CountyId == countyId);
 
                 if (county != null)
                 {
@@ -112,8 +133,24 @@ namespace CoviDoc.Models.Mocks
         private void FetchCounties()
         {
             string jsonString = ReadFromFile(countiesFilePath).GetAwaiter().GetResult();
-            _counties = JsonConvert.DeserializeObject<List<County>>(jsonString);
+            _counties = JsonConvert.DeserializeObject<List<Location.County>>(jsonString);
         }
+
+        private void FetchCountries()
+        {
+            try
+            {
+
+                string jsonString = ReadFromFile(countriesFilePath).GetAwaiter().GetResult();
+                _countries = JsonConvert.DeserializeObject<string[]>(jsonString);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
         private async Task<string> ReadFromFile(string filePathSource)
         {
             using StreamReader streamReader = new StreamReader(filePathSource);

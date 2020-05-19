@@ -6,14 +6,22 @@ using System.Threading.Tasks;
 
 namespace CoviDoc.Models
 {
-    public class County
+    public class Location
     {
-        [JsonProperty("ID")]
-        public int CountyId { get; set; }
-        [JsonProperty("CountyName")]
-        public string CountyName { get; set; }
-        [JsonProperty("Constituencies")]
-        public IEnumerable<Constituency> Constituencies { get; set; }
+        public class Country
+        {
+            public string[] Countries { get; set; }
+        }
+
+        public class County
+        {
+            [JsonProperty("ID")]
+            public int CountyId { get; set; }
+            [JsonProperty("CountyName")]
+            public string CountyName { get; set; }
+            [JsonProperty("Constituencies")]
+            public IEnumerable<Constituency> Constituencies { get; set; }
+        }
 
         public class Constituency
         {
