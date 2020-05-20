@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using FileService;
 
 namespace CoviDoc
 {
@@ -31,6 +32,8 @@ namespace CoviDoc
             services.AddSingleton<IPatientRepository, MockPatientRepository>();
             services.AddSingleton<ITestCentreRepository, MockTestCentreRepository>();
             services.AddSingleton<ILocationRepository, MockLocationRepository>();
+            services.AddSingleton<IFileUtility, DiskFileUtility>();
+            services.AddSingleton<IDiagnosisReportRepository, MockDiagnosisReportRepository>();
 
         }
 

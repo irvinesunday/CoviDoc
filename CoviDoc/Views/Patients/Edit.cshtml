@@ -1,10 +1,10 @@
-﻿@model CoviDoc.Models.Patient
+﻿@model CoviDoc.ViewModels.PatientViewModel
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h3>Edit Patient Details</h3>
 
 <h4>Patient</h4>
 <hr />
@@ -12,76 +12,69 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
+            <input type="hidden" asp-for="Patient.ID" />
+            <input type="hidden" asp-for="Patient.DateRegistered" />
             <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MiddleName" class="control-label"></label>
-                <input asp-for="MiddleName" class="form-control" />
-                <span asp-validation-for="MiddleName" class="text-danger"></span>
+                <label asp-for="Patient.FirstName" class="control-label"></label>
+                <input asp-for="Patient.FirstName" class="form-control" />
+                <span asp-validation-for="Patient.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
+                <label asp-for="Patient.MiddleName" class="control-label"></label>
+                <input asp-for="Patient.MiddleName" class="form-control" />
+                <span asp-validation-for="Patient.MiddleName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdNumber" class="control-label"></label>
-                <input asp-for="IdNumber" class="form-control" />
-                <span asp-validation-for="IdNumber" class="text-danger"></span>
+                <label asp-for="Patient.LastName" class="control-label"></label>
+                <input asp-for="Patient.LastName" class="form-control" />
+                <span asp-validation-for="Patient.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DoB" class="control-label"></label>
-                <input asp-for="DoB" class="form-control" />
-                <span asp-validation-for="DoB" class="text-danger"></span>
+                <label asp-for="Patient.IdNumber" class="control-label"></label>
+                <input asp-for="Patient.IdNumber" class="form-control" />
+                <span asp-validation-for="Patient.IdNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Gender" class="control-label"></label>
-                <select asp-for="Gender" class="form-control"></select>
-                <span asp-validation-for="Gender" class="text-danger"></span>
+                <label asp-for="Patient.DoB" class="control-label"></label>
+                <input asp-for="Patient.DoB" class="form-control" />
+                <span asp-validation-for="Patient.DoB" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Nationality" class="control-label"></label>
-                <input asp-for="Nationality" class="form-control" />
-                <span asp-validation-for="Nationality" class="text-danger"></span>
+                <label asp-for="Patient.Gender" class="control-label"></label>
+                <select asp-for="Patient.Gender" class="form-control"
+                        asp-items="Html.GetEnumSelectList<Enums.Gender>()">
+                    <option>-- Select Gender --</option>
+                </select>
+                <span asp-validation-for="Patient.Gender" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MobileNumber" class="control-label"></label>
-                <input asp-for="MobileNumber" class="form-control" />
-                <span asp-validation-for="MobileNumber" class="text-danger"></span>
+                <label asp-for="Patient.Nationality" class="control-label"></label>
+                <select asp-for="Patient.Nationality" class="form-control"
+                        asp-items="@(new SelectList(Model.Countries, "Value", "Text", Model.Patient.Nationality))"></select>
+                <span asp-validation-for="Patient.Nationality" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="County" class="control-label"></label>
-                <input asp-for="County" class="form-control" />
-                <span asp-validation-for="County" class="text-danger"></span>
+                <label asp-for="Patient.MobileNumber" class="control-label"></label>
+                <input asp-for="Patient.MobileNumber" class="form-control" />
+                <span asp-validation-for="Patient.MobileNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Constituency" class="control-label"></label>
-                <input asp-for="Constituency" class="form-control" />
-                <span asp-validation-for="Constituency" class="text-danger"></span>
+                <label asp-for="Patient.County" class="control-label"></label>
+                <select asp-for="Patient.County" class="form-control" id="County"
+                        asp-items="@(new SelectList(Model.Counties, "Value", "Text", Model.Patient.County))"></select>
+                <span asp-validation-for="Patient.County" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Ward" class="control-label"></label>
-                <input asp-for="Ward" class="form-control" />
-                <span asp-validation-for="Ward" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsAdult" /> @Html.DisplayNameFor(model => model.IsAdult)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
+                <label asp-for="Patient.Constituency" class="control-label"></label>
+                <select asp-for="Patient.Constituency" class="form-control" id="Constituency"
+                        asp-items="@(new SelectList(Model.Constituencies, "Value", "Text", Model.Patient.Constituency))"></select>
+                <span asp-validation-for="Patient.Constituency" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DateRegistered" class="control-label"></label>
-                <input asp-for="DateRegistered" class="form-control" />
-                <span asp-validation-for="DateRegistered" class="text-danger"></span>
+                <label asp-for="Patient.Ward" class="control-label"></label>
+                <select asp-for="Patient.Ward" class="form-control" id="Ward"
+                        asp-items="@(new SelectList(Model.Wards, "Value", "Text", Model.Patient.Ward))"></select>
+                <span asp-validation-for="Patient.Ward" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -95,5 +88,60 @@
 </div>
 
 @section Scripts {
+    <script type="text/javascript">
+        $('#County').change(function () {
+            var selectedCounty = $("#County").val();
+            var constituencySelect = $('#Constituency');
+            var wardSelect = $('#Ward');
+            constituencySelect.empty();
+            wardSelect.empty();
+            if (selectedCounty != null && selectedCounty != '') {
+                $.getJSON('@Url.Action("GetConstituencies")', { CountyName: selectedCounty }, function (constituencies) {
+                    if (constituencies != null && !jQuery.isEmptyObject(constituencies)) {
+                        constituencySelect.append($('<option/>', {
+                            value: null,
+                            text: ""
+                        }));
+                        wardSelect.append($('<option/>', {
+                            value: null,
+                            text: ""
+                        }));
+                        $.each(constituencies, function (index, constituency) {
+                            constituencySelect.append($('<option/>', {
+                                value: constituency.value,
+                                text: constituency.text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+
+        $('#Constituency').change(function () {
+            console.log('Hello');
+            var selectedCounty = $("#County").val();
+            var selectedConstituency = $("#Constituency").val();
+            var wardSelect = $('#Ward');
+            wardSelect.empty();
+            if (selectedCounty != null && selectedCounty != '' &&
+                selectedConstituency != null && selectedConstituency != '') {
+                $.getJSON('@Url.Action("GetWards")', { CountyName: selectedCounty, ConstituencyId: selectedConstituency }, function (wards) {
+                    if (wards != null && !jQuery.isEmptyObject(wards)) {
+                        console.log(wards);
+                        wardSelect.append($('<option/>', {
+                            value: null,
+                            text: ""
+                        }));
+                        $.each(wards, function (index, ward) {
+                            wardSelect.append($('<option/>', {
+                                value: ward.value,
+                                text: ward.text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

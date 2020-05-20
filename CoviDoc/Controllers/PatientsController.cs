@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using CoviDoc.Models;
 using CoviDoc.Models.Interfaces;
 using CoviDoc.ViewModels;
+using CoviDoc.Common;
 
 namespace CoviDoc.Controllers
 {
@@ -14,15 +15,18 @@ namespace CoviDoc.Controllers
     {
         readonly IPatientRepository _patientRepository;
         readonly ITestCentreRepository _testCentreRepository;
-        readonly ILocationRepository _mockCountyRepository;
+        readonly ILocationRepository _locationRepository;
+        readonly IDiagnosisReportRepository _diagnosisReportRepository;
 
         public PatientsController(IPatientRepository patientRepository,
                                  ITestCentreRepository testCentreRepository,
-                                 ILocationRepository mockCountyRepository)
+                                 ILocationRepository locationRepository,
+                                 IDiagnosisReportRepository diagnosisReportRepository)
         {
             _patientRepository = patientRepository;
             _testCentreRepository = testCentreRepository;
-            _mockCountyRepository = mockCountyRepository;
+            _locationRepository = locationRepository;
+            _diagnosisReportRepository = diagnosisReportRepository;
         }
 
         // GET: Patients
@@ -46,7 +50,22 @@ namespace CoviDoc.Controllers
                 return NotFound();
             }
 
-            return View(patient);
+            DiagnosisReport diagnosisReport = _diagnosisReportRepository.GetDiagnosisReport(patient.ID);
+            TestCentre testCentre = null;
+
+            if (diagnosisReport != null)
+            {
+                testCentre = _testCentreRepository.GetTestCentre(diagnosisReport.TestCentreId);
+            }
+
+            PatientViewModel patientViewModel = new PatientViewModel()
+            {
+                Patient = patient,
+                DiagnosisReport = diagnosisReport ?? new DiagnosisReport(),
+                TestCentre = testCentre
+            };
+
+            return View(patientViewModel);
         }
 
         // GET: Patients/Details/5
@@ -69,145 +88,228 @@ namespace CoviDoc.Controllers
         // GET: Patients/Create
         public IActionResult Create()
         {
-            //var counties = _mockCountyRepository.GetCounties();
-            //List<string> countyName = new List<string>();
-            //foreach(var county in counties)
-            //{
-            //    countyName.Add(county.CountyName);
-            //}
-            //ViewData["Counties"] = countyName;
-
-            PatientCreateViewModel patientCreateViewModel = new PatientCreateViewModel()
+            PatientViewModel patientCreateViewModel = new PatientViewModel()
             {
-                Countries = _mockCountyRepository.GetCountries(),
-                Counties = _mockCountyRepository.GetCounties(),
-                Constituencies = _mockCountyRepository.GetConstituencies(),
-                Wards = _mockCountyRepository.GetWards()
+                Countries = _locationRepository.GetCountries(),
+                Counties = _locationRepository.GetCounties(),
+                Constituencies = _locationRepository.GetConstituencies(),
+                Wards = _locationRepository.GetWards()
             };
 
             return View(patientCreateViewModel);
         }
 
-        public ActionResult GetConstituencies(int CountyId)
+        public ActionResult GetConstituencies(string CountyName)
         {
-            if (CountyId > 0)
+            if (!string.IsNullOrEmpty(CountyName))
             {
-                IEnumerable<SelectListItem> constituencies = _mockCountyRepository.GetConstituencies(CountyId);
+                IEnumerable<SelectListItem> constituencies = _locationRepository.GetConstituencies(CountyName);
                 return Json(constituencies);
             }
             return null;
         }
 
-        public ActionResult GetWards(int CountyId, string constituencyId)
+        public ActionResult GetWards(string CountyName, string constituencyId)
         {
-            if (CountyId > 0 && !string.IsNullOrEmpty(constituencyId))
+            if (!string.IsNullOrEmpty(CountyName) && !string.IsNullOrEmpty(constituencyId))
             {
-                IEnumerable<SelectListItem> wards = _mockCountyRepository.GetWards(CountyId, constituencyId);
+                IEnumerable<SelectListItem> wards = _locationRepository.GetWards(CountyName, constituencyId);
                 return Json(wards);
             }
             return null;
         }
 
-    //    // POST: Patients/Create
-    //    // To protect from overposting attacks, enable the specific properties you want to bind to, for
-    //    // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    //    [HttpPost]
-    //    [ValidateAntiForgeryToken]
-    //    public async Task<IActionResult> Create([Bind("ID,FirstName,MiddleName,LastName,IdNumber,DoB,Gender,Nationality,MobileNumber,County,Constituency,Ward,IsAdult,IsActive,DateRegistered")] Patient patient)
-    //    {
-    //        if (ModelState.IsValid)
-    //        {
-    //            patient.ID = Guid.NewGuid();
-    //            _context.Add(patient);
-    //            await _context.SaveChangesAsync();
-    //            return RedirectToAction(nameof(Index));
-    //        }
-    //        return View(patient);
-    //    }
+        // POST: Patients/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,IdNumber,DoB,Gender,Nationality,MobileNumber,County,Constituency,Ward")] Patient patient)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    patient.ID = Guid.NewGuid();
+                    patient.IsAdult = Helpers.IsAdult(patient.DoB);
+                    patient.DateRegistered = DateTime.Now;
 
-    //    // GET: Patients/Edit/5
-    //    public async Task<IActionResult> Edit(Guid? id)
-    //    {
-    //        if (id == null)
-    //        {
-    //            return NotFound();
-    //        }
+                    _patientRepository.AddPatient(patient);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest();
+                }
+            }
 
-    //        var patient = await _context.Patient.FindAsync(id);
-    //        if (patient == null)
-    //        {
-    //            return NotFound();
-    //        }
-    //        return View(patient);
-    //    }
+            PatientViewModel patientViewModel = new PatientViewModel()
+            {
+                Countries = _locationRepository.GetCountries(),
+                Counties = _locationRepository.GetCounties(),
+                Constituencies = _locationRepository.GetConstituencies(),
+                Wards = _locationRepository.GetWards()
+            };
 
-    //    // POST: Patients/Edit/5
-    //    // To protect from overposting attacks, enable the specific properties you want to bind to, for
-    //    // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    //    [HttpPost]
-    //    [ValidateAntiForgeryToken]
-    //    public async Task<IActionResult> Edit(Guid id, [Bind("ID,FirstName,MiddleName,LastName,IdNumber,DoB,Gender,Nationality,MobileNumber,County,Constituency,Ward,IsAdult,IsActive,DateRegistered")] Patient patient)
-    //    {
-    //        if (id != patient.ID)
-    //        {
-    //            return NotFound();
-    //        }
+            return View(patientViewModel);
+        }
 
-    //        if (ModelState.IsValid)
-    //        {
-    //            try
-    //            {
-    //                _context.Update(patient);
-    //                await _context.SaveChangesAsync();
-    //            }
-    //            catch (DbUpdateConcurrencyException)
-    //            {
-    //                if (!PatientExists(patient.ID))
-    //                {
-    //                    return NotFound();
-    //                }
-    //                else
-    //                {
-    //                    throw;
-    //                }
-    //            }
-    //            return RedirectToAction(nameof(Index));
-    //        }
-    //        return View(patient);
-    //    }
+        // GET: Patients/Edit/5
+        public async Task<IActionResult> Edit(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-    //    // GET: Patients/Delete/5
-    //    public async Task<IActionResult> Delete(Guid? id)
-    //    {
-    //        if (id == null)
-    //        {
-    //            return NotFound();
-    //        }
+            var patient = _patientRepository.GetPatient(id);
+            if (patient == null)
+            {
+                return NotFound();
+            }
 
-    //        var patient = await _context.Patient
-    //            .FirstOrDefaultAsync(m => m.ID == id);
-    //        if (patient == null)
-    //        {
-    //            return NotFound();
-    //        }
+            PatientViewModel patientViewModel = new PatientViewModel()
+            {
+                Patient = patient,
+                Countries = _locationRepository.GetCountries(),
+                Counties = _locationRepository.GetCounties(),
+                Constituencies = _locationRepository.GetConstituencies(patient.County),
+                Wards = _locationRepository.GetWards(patient.County, Helpers.GetConstituencyId(patient.Constituency))
+            };
 
-    //        return View(patient);
-    //    }
+            return View(patientViewModel);
+        }
 
-    //    // POST: Patients/Delete/5
-    //    [HttpPost, ActionName("Delete")]
-    //    [ValidateAntiForgeryToken]
-    //    public async Task<IActionResult> DeleteConfirmed(Guid id)
-    //    {
-    //        var patient = await _context.Patient.FindAsync(id);
-    //        _context.Patient.Remove(patient);
-    //        await _context.SaveChangesAsync();
-    //        return RedirectToAction(nameof(Index));
-    //    }
+        // POST: Patients/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Guid id,
+                                             [Bind("ID,FirstName,MiddleName,LastName,IdNumber,DoB,Gender,Nationality,MobileNumber,County,Constituency,Ward,DateRegistered")] Patient patient)
+        {
+            if (id != patient.ID)
+            {
+                return NotFound();
+            }
 
-    //    private bool PatientExists(Guid id)
-    //    {
-    //        return _context.Patient.Any(e => e.ID == id);
-    //    }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    patient.IsAdult = Helpers.IsAdult(patient.DoB);
+                    _patientRepository.UpdatePatient(patient);
+                }
+                catch (ArgumentNullException)
+                {
+                    return NotFound();
+                }
+                catch (InvalidOperationException)
+                {
+                    return BadRequest();
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            PatientViewModel patientViewModel = new PatientViewModel()
+            {
+                Patient = patient,
+                Countries = _locationRepository.GetCountries(),
+                Counties = _locationRepository.GetCounties(),
+                Constituencies = _locationRepository.GetConstituencies(patient.County),
+                Wards = _locationRepository.GetWards(patient.County, Helpers.GetConstituencyId(patient.Constituency))
+            };
+
+            return View(patientViewModel);
+        }
+
+        public async Task<IActionResult> Test(Guid id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var patient = _patientRepository.GetPatient(id);
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            PatientTestViewModel patientTestViewModel = new PatientTestViewModel()
+            {
+                PatientId = patient.ID,
+                PatientName = patient.FullName,
+                PatientIdNumber = patient.IdNumber,
+                PatientGender = patient.Gender,
+                TestCentres = _testCentreRepository.GetTestCentres()
+            };
+
+            return View(patientTestViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Test([Bind("PatientId,TestCentreId,TestStatus")] PatientTestViewModel patientTestViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    DiagnosisReport diagnosisReport = new DiagnosisReport
+                    {
+                        DiagnosisReportId = Guid.NewGuid(),
+                        PatientId = patientTestViewModel.PatientId,
+                        TestStatus = patientTestViewModel.TestStatus,
+                        TestCentreId = patientTestViewModel.TestCentreId,
+                        DateTested = DateTime.Now
+                    };
+
+                    _diagnosisReportRepository.AddDiagnosisReport(diagnosisReport);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        //// GET: Patients/Delete/5
+        //public async Task<IActionResult> Delete(Guid? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var patient = await _context.Patient
+        //        .FirstOrDefaultAsync(m => m.ID == id);
+        //    if (patient == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(patient);
+        //}
+
+        //    // POST: Patients/Delete/5
+        //    [HttpPost, ActionName("Delete")]
+        //    [ValidateAntiForgeryToken]
+        //    public async Task<IActionResult> DeleteConfirmed(Guid id)
+        //    {
+        //        var patient = await _context.Patient.FindAsync(id);
+        //        _context.Patient.Remove(patient);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    private bool PatientExists(Guid id)
+        //    {
+        //        return _context.Patient.Any(e => e.ID == id);
+        //    }
     }
 }

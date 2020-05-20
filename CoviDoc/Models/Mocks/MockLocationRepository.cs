@@ -14,7 +14,7 @@ namespace CoviDoc.Models.Mocks
         private const string countiesFilePath = ".//Resources//Counties.json";
         private const string countriesFilePath = ".//Resources//Countries.json";
         private List<Location.County> _counties;
-        private string[] _countries;
+        private Location.Country _country;
 
         public MockLocationRepository()
         {
@@ -24,7 +24,7 @@ namespace CoviDoc.Models.Mocks
 
         public IEnumerable<SelectListItem> GetCountries()
         {
-            List<SelectListItem> counties = _countries.OrderBy(n => n)
+            List<SelectListItem> counties = _country.Countries.OrderBy(n => n)
                                                      .Select(n =>
                                                      new SelectListItem
                                                      {
@@ -46,7 +46,7 @@ namespace CoviDoc.Models.Mocks
                                                      .Select(n =>
                                                      new SelectListItem
                                                      {
-                                                         Value = n.CountyId.ToString(),
+                                                         Value = n.CountyName,
                                                          Text = n.CountyName
                                                      }).ToList();
             var countyTip = new SelectListItem()
@@ -71,11 +71,11 @@ namespace CoviDoc.Models.Mocks
             return constituencies;
         }
 
-        public IEnumerable<SelectListItem> GetConstituencies(int countyId)
+        public IEnumerable<SelectListItem> GetConstituencies(string countyName)
         {
-            if (countyId > 0)
+            if (!string.IsNullOrEmpty(countyName))
             {
-                var county = _counties.FirstOrDefault(x => x.CountyId == countyId);
+                var county = _counties.FirstOrDefault(x => x.CountyName == countyName);
 
                 if (county != null)
                 {
@@ -106,24 +106,27 @@ namespace CoviDoc.Models.Mocks
             return wards;
         }
 
-        public IEnumerable<SelectListItem> GetWards(int countyId, string constituencyId)
+        public IEnumerable<SelectListItem> GetWards(string countyName, string constituencyId)
         {
-            if (countyId > 0 && !string.IsNullOrEmpty(constituencyId))
+            if (!string.IsNullOrEmpty(countyName) && !string.IsNullOrEmpty(constituencyId))
             {
-                var county = _counties.FirstOrDefault(x => x.CountyId == countyId);
+                var county = _counties.FirstOrDefault(x => x.CountyName == countyName);
 
                 if (county != null)
                 {
                     var constituency = county.Constituencies.FirstOrDefault(x => x.Constituencyid == constituencyId);
 
-                    IEnumerable<SelectListItem> wards = constituency.Wards.OrderBy(n => n)
+                    if (constituency != null)
+                    {
+                        IEnumerable<SelectListItem> wards = constituency.Wards.OrderBy(n => n)
                                                                           .Select(n =>
                                                                             new SelectListItem
                                                                             {
                                                                                 Value = n,
                                                                                 Text = n
                                                                             }).ToList();
-                    return new SelectList(wards, "Value", "Text");
+                        return new SelectList(wards, "Value", "Text");
+                    }
                 }
             }
 
@@ -142,7 +145,7 @@ namespace CoviDoc.Models.Mocks
             {
 
                 string jsonString = ReadFromFile(countriesFilePath).GetAwaiter().GetResult();
-                _countries = JsonConvert.DeserializeObject<string[]>(jsonString);
+                _country = JsonConvert.DeserializeObject<Location.Country>(jsonString);
             }
             catch (Exception ex)
             {

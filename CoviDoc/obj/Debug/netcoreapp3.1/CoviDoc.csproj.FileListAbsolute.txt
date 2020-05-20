@@ -1,13 +1,8 @@
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.csproj.CoreCompileInputs.cache
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.RazorAssemblyInfo.cache
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.RazorAssemblyInfo.cs
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.AssemblyInfoInputs.cache
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.AssemblyInfo.cs
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\appsettings.Development.json
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\appsettings.json
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\Resources\Counties.json
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\Resources\Countries.json
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\Resources\MockPatients.json
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\Resources\MockTestCentres.json
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\CoviDoc.exe
@@ -143,6 +138,12 @@ C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\runti
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.csproj.CoreCompileInputs.cache
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.RazorAssemblyInfo.cache
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.RazorAssemblyInfo.cs
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.AssemblyInfoInputs.cache
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.AssemblyInfo.cs
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.TagHelpers.input.cache
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.TagHelpers.output.cache
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.RazorCoreGenerate.cache
@@ -168,4 +169,7 @@ C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviD
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.pdb
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.genruntimeconfig.cache
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.csprojAssemblyReference.cache
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\Resources\Countries.json
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\Resources\MockDiagnosisReports.json
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\FileService.dll
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\FileService.pdb
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\Razor\Views\Patients\Test.cshtml.g.cs

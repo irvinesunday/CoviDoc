@@ -1,0 +1,30 @@
+[
+  {
+    "DiagnosisReportId": "fc9c9832-399d-47ef-941c-46ada54e9a49",
+    "PatientId": "2428e6f5-be97-4943-aa4a-55588454a36b",
+    "TestCentreId": "7867209e-306d-41d2-bce7-30ca56bbab54",
+    "TestStatus": "Pending",
+    "DateTested": null
+  },
+  {
+    "DiagnosisReportId": "6ba9e12c-693e-4950-9a56-605e1ad31595",
+    "PatientId": "7eeed2d8-5961-45d0-a865-aa4f36f67ac9",
+    "TestCentreId": "7867209e-306d-41d2-bce7-30ca56bbab54",
+    "TestStatus": "Negative",
+    "DateTested": "2020-05-20T20:32:04.4489526+03:00"
+  },
+  {
+    "DiagnosisReportId": "989b8b9b-91da-4a2f-89a6-1b5e2df62932",
+    "PatientId": "2428e6f5-be97-4943-aa4a-55588454a36b",
+    "TestCentreId": "4f1770a0-b24e-49d6-98b3-df2941de4018",
+    "TestStatus": "Negative",
+    "DateTested": "2020-05-20T21:14:40.0190142+03:00"
+  },
+  {
+    "DiagnosisReportId": "ee1f9725-22e1-493f-8e41-97add1d94e64",
+    "PatientId": "2428e6f5-be97-4943-aa4a-55588454a36b",
+    "TestCentreId": "fc9c9832-399d-47ef-941c-46ada54e9a49",
+    "TestStatus": "Positive",
+    "DateTested": "2020-05-20T21:18:55.2528998+03:00"
+  }
+]

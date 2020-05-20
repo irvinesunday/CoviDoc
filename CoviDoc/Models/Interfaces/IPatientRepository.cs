@@ -9,9 +9,9 @@ namespace CoviDoc.Models.Interfaces
     {
         void AddPatient(Patient patient);
         void UpdatePatient(Patient patient);
-        void TestPatient(Patient patient, Encounter encounter);
+        void TestPatient(Patient patient, DiagnosisReport encounter);
         List<Patient> GetPatients(string idNumber);
         List<Patient> GetPatients();
-        Patient GetPatient(Guid id);        
+        Patient GetPatient(Guid? id);
     }
 }

@@ -1,4 +1,6 @@
 ﻿using CoviDoc.Models.Interfaces;
+using FileService;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -12,33 +14,49 @@ namespace CoviDoc.Models.Mocks
     {
         private const string testCentresFilePath = ".//Resources//MockTestCentres.json";
         private List<TestCentre> _testCentres;
+        private readonly IFileUtility _fileUtility;
 
-        public MockTestCentreRepository()
+        public MockTestCentreRepository(IFileUtility fileUtility)
         {
+            _fileUtility = fileUtility;
             FetchTestCentres();
         }
 
-        public List<TestCentre> GetTestCentres()
+        public IEnumerable<SelectListItem> GetTestCentres()
         {
-            return _testCentres;
+            List<SelectListItem> testCentres =_testCentres.OrderBy(x => x.Name)
+                                                          .Select(n =>
+                                                           new SelectListItem
+                                                           {
+                                                               Value = n.ID.ToString(),
+                                                               Text = n.Name
+                                                           }).ToList();
+
+            var testCentreTip = new SelectListItem()
+            {
+                Value = null,
+                Text = "-- Select Test Centre --"
+            };
+            testCentres.Insert(0, testCentreTip);
+            return new SelectList(testCentres, "Value", "Text");
+        }
+
+        public TestCentre GetTestCentre(Guid? testCentreId)
+        {
+            return testCentreId == null ? null : _testCentres.FirstOrDefault(x => x.ID == testCentreId);
         }
 
         private void FetchTestCentres()
         {
             try
             {
-                string jsonString = ReadFromFile(testCentresFilePath).GetAwaiter().GetResult();
+                string jsonString = _fileUtility.ReadFromFileAsync(testCentresFilePath).GetAwaiter().GetResult();
                 _testCentres = JsonConvert.DeserializeObject<List<TestCentre>>(jsonString);
             }
             catch (Exception ex)
             {
                 throw;
             }
-        }
-        private async Task<string> ReadFromFile(string filePathSource)
-        {
-            using StreamReader streamReader = new StreamReader(filePathSource);
-            return await streamReader.ReadToEndAsync();
         }
     }
 }

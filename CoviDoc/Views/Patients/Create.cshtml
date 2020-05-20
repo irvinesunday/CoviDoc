@@ -1,4 +1,4 @@
-﻿@model CoviDoc.ViewModels.PatientCreateViewModel
+﻿@model CoviDoc.ViewModels.PatientViewModel
 
 @{
     ViewData["Title"] = "Register Patient";
@@ -90,7 +90,7 @@
             constituencySelect.empty();
             wardSelect.empty();
             if (selectedCounty != null && selectedCounty != '') {
-                $.getJSON('@Url.Action("GetConstituencies")', { CountyId: selectedCounty }, function (constituencies) {
+                $.getJSON('@Url.Action("GetConstituencies")', { CountyName: selectedCounty }, function (constituencies) {
                     if (constituencies != null && !jQuery.isEmptyObject(constituencies)) {
                         constituencySelect.append($('<option/>', {
                             value: null,
@@ -119,7 +119,7 @@
             wardSelect.empty();
             if (selectedCounty != null && selectedCounty != '' &&
                 selectedConstituency != null && selectedConstituency != '') {
-                $.getJSON('@Url.Action("GetWards")', { CountyId: selectedCounty, ConstituencyId: selectedConstituency }, function (wards) {
+                $.getJSON('@Url.Action("GetWards")', { CountyName: selectedCounty, ConstituencyId: selectedConstituency }, function (wards) {
                     if (wards != null && !jQuery.isEmptyObject(wards)) {
                         console.log(wards);
                         wardSelect.append($('<option/>', {

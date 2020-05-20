@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "zfiv4mZ9ijST8InuWc8mW8xHJJ3Kn3pwBk2Ycndd8RXPmABnYogWkhiJtL7FR7CWKzah5vIzAduj7cOTeD2wDQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\DiskFileUtility\\FileService.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\v-irsund\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

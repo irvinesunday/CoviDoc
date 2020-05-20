@@ -1,13 +1,26 @@
 ﻿using Newtonsoft.Json.Converters;
+using System;
 
 namespace CoviDoc.Common
 {
     public static class Helpers
     {
-        public static IsoDateTimeConverter DateTimeConverter()
+        public static bool IsAdult(DateTime dateOfBirth)
         {
-            var format = "dd/MM/yyyy";
-            return new IsoDateTimeConverter { DateTimeFormat = format };
+            DateTime now = DateTime.Today;
+            int age = now.Year - dateOfBirth.Year;
+            if (now.Month < dateOfBirth.Month ||
+               (now.Month == dateOfBirth.Month &&
+                now.Day < dateOfBirth.Day))
+            {
+                age--;
+            }
+            return age >= 18;
+        }
+
+        public static string GetConstituencyId(string constituencyName)
+        {
+            return constituencyName.Replace(" ", string.Empty);
         }
     }
 }

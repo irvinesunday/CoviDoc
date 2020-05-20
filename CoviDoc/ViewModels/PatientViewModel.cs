@@ -7,18 +7,14 @@ using System.Threading.Tasks;
 
 namespace CoviDoc.ViewModels
 {
-    public class PatientCreateViewModel
+    public class PatientViewModel
     {
         public Patient Patient { get; set; }
-
+        public DiagnosisReport DiagnosisReport { get; set; }
         public IEnumerable<SelectListItem> Countries { get; set; }
-
         public IEnumerable<SelectListItem> Counties { get; set; }
-        //public string SelectedCounty { get; set; }
-
         public IEnumerable<SelectListItem> Constituencies { get; set; }
-        //public string SelectedConstituency { get; set; }
-
         public IEnumerable<SelectListItem> Wards { get; set; }
+        public TestCentre TestCentre { get; set; }
     }
 }

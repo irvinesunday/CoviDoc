@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static CoviDoc.Models.Enums;
 using JsonConverter = Newtonsoft.Json.JsonConverter;
@@ -47,7 +46,8 @@ namespace CoviDoc.Models
         [DataType(DataType.Date)]
         public DateTime DoB { get; set; }
 
-        [Newtonsoft.Json.JsonConverter(typeof(StringEnumConverter))]
+        [Required]
+        [JsonConverter(typeof(StringEnumConverter))]
         public Gender Gender { get; set; } = Gender.Uknown;
 
         public string Nationality { get; set; }
@@ -61,7 +61,7 @@ namespace CoviDoc.Models
         public bool IsAdult { get; set; }
         public bool IsActive { get; set; } = true;
 
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         [Display(Name = "Date Of Registration")]
         public DateTime DateRegistered { get; set; }
 

@@ -10,9 +10,9 @@ namespace CoviDoc.Models.Interfaces
     {
         IEnumerable<SelectListItem> GetCountries();
         IEnumerable<SelectListItem> GetCounties();
-        IEnumerable<SelectListItem> GetConstituencies(int countyId);
+        IEnumerable<SelectListItem> GetConstituencies(string countyName);
         IEnumerable<SelectListItem> GetConstituencies();
-        IEnumerable<SelectListItem> GetWards(int countyId, string constituencyId);
+        IEnumerable<SelectListItem> GetWards(string countyName, string constituencyId);
         IEnumerable<SelectListItem> GetWards();
     }
 }

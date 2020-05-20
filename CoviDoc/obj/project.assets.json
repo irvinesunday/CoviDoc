@@ -2678,6 +2678,16 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlSerializer.dll": {}
         }
+      },
+      "FileService/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/FileService.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/FileService.dll": {}
+        }
       }
     }
   },
@@ -8488,10 +8498,16 @@
         "system.xml.xmlserializer.4.3.0.nupkg.sha512",
         "system.xml.xmlserializer.nuspec"
       ]
+    },
+    "FileService/1.0.0": {
+      "type": "project",
+      "path": "../DiskFileUtility/FileService.csproj",
+      "msbuildProject": "../DiskFileUtility/FileService.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
+      "FileService >= 1.0.0",
       "Microsoft.EntityFrameworkCore.SqlServer >= 3.1.2",
       "Microsoft.EntityFrameworkCore.Sqlite >= 3.1.2",
       "Microsoft.EntityFrameworkCore.Tools >= 3.1.2",
@@ -8531,7 +8547,11 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\DiskFileUtility\\FileService.csproj": {
+              "projectPath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\DiskFileUtility\\FileService.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

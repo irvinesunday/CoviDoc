@@ -1,0 +1,63 @@
+﻿@model CoviDoc.Models.PatientTestViewModel
+
+@{
+    ViewData["Title"] = "Patient Test Result";
+}
+
+<h5>Enter Patient Test Result</h5>
+<hr />
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.PatientName)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.PatientName)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.PatientIdNumber)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.PatientIdNumber)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.PatientGender)
+    </dt>
+    <dd class="col-sm-10">
+        @Html.DisplayFor(model => model.PatientGender)
+    </dd>
+</dl>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Test">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PatientId" />
+            <div class="form-group">
+                <label asp-for="TestCentreId" class="control-label"></label>
+                <select asp-for="TestCentreId" class="form-control"
+                        asp-items="@(new SelectList(Model.TestCentres, "Value", "Text"))"></select>
+                <span asp-validation-for="TestCentreId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TestStatus" class="control-label"></label>
+                <select asp-for="TestStatus" class="form-control"
+                        asp-items="Html.GetEnumSelectList<Enums.TestStatus>()">
+                    <option>-- Select Status --</option>
+                </select>
+                <span asp-validation-for="TestStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit Result" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }

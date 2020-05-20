@@ -1,0 +1,9 @@
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\DiskFileUtility\bin\Debug\netstandard2.0\FileService.deps.json
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\DiskFileUtility\bin\Debug\netstandard2.0\FileService.dll
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\DiskFileUtility\bin\Debug\netstandard2.0\FileService.pdb
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\DiskFileUtility\obj\Debug\netstandard2.0\FileService.csprojAssemblyReference.cache
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\DiskFileUtility\obj\Debug\netstandard2.0\FileService.csproj.CoreCompileInputs.cache
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\DiskFileUtility\obj\Debug\netstandard2.0\FileService.AssemblyInfoInputs.cache
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\DiskFileUtility\obj\Debug\netstandard2.0\FileService.AssemblyInfo.cs
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\DiskFileUtility\obj\Debug\netstandard2.0\FileService.dll
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\DiskFileUtility\obj\Debug\netstandard2.0\FileService.pdb

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CoviDoc.Common;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace CoviDoc.Models
         public class Constituency
         {
             [JsonIgnore]
-            public string Constituencyid => ConstituencyName.Replace(" ", string.Empty);
+            public string Constituencyid => Helpers.GetConstituencyId(ConstituencyName);
             [JsonProperty(PropertyName = "ConstituencyName")]
             public string ConstituencyName { get; set; }
             [JsonProperty(PropertyName = "Wards")]
