@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DiskFileUtility\FileService.csproj" />
+    <ProjectReference Include="..\MessagingService\MessagingService.csproj" />
   </ItemGroup>
 
 </Project>

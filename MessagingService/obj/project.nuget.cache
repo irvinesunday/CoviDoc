@@ -1,11 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EgVR3ab77Cn2+99evv3Z7qa7nR9pcHv/whsRuEqHPmWcqcIxz9vlaqyX7BBvCQTKyPBKIK0maMLMA7y3E+TiSw==",
+  "dgSpecHash": "AXyg9Ym0qbYe78jhBzFbpx/z1T9S3Z51+ZJxefjnU6Gahp36heTttbJrj++Kt7UiLSh82Tw8XAxx3kuVFL7K9g==",
   "success": true,
   "projectFilePath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\MessagingService.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\v-irsund\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }

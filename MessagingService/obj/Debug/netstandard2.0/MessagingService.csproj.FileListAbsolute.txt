@@ -1,8 +1,0 @@
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\bin\Debug\netstandard2.0\MessagingService.deps.json
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\bin\Debug\netstandard2.0\MessagingService.dll
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\bin\Debug\netstandard2.0\MessagingService.pdb
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\obj\Debug\netstandard2.0\MessagingService.csproj.CoreCompileInputs.cache
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\obj\Debug\netstandard2.0\MessagingService.AssemblyInfoInputs.cache
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\obj\Debug\netstandard2.0\MessagingService.AssemblyInfo.cs
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\obj\Debug\netstandard2.0\MessagingService.dll
-C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\obj\Debug\netstandard2.0\MessagingService.pdb

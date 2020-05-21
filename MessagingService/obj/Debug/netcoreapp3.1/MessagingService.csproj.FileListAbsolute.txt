@@ -1,0 +1,9 @@
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\bin\Debug\netcoreapp3.1\MessagingService.deps.json
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\bin\Debug\netcoreapp3.1\MessagingService.dll
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\bin\Debug\netcoreapp3.1\MessagingService.pdb
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\obj\Debug\netcoreapp3.1\MessagingService.AssemblyInfoInputs.cache
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\obj\Debug\netcoreapp3.1\MessagingService.AssemblyInfo.cs
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\obj\Debug\netcoreapp3.1\MessagingService.dll
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\obj\Debug\netcoreapp3.1\MessagingService.pdb
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\obj\Debug\netcoreapp3.1\MessagingService.csproj.CoreCompileInputs.cache
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\MessagingService\obj\Debug\netcoreapp3.1\MessagingService.csprojAssemblyReference.cache

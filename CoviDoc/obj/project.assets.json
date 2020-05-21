@@ -2688,6 +2688,16 @@
         "runtime": {
           "bin/placeholder/FileService.dll": {}
         }
+      },
+      "MessagingService/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "compile": {
+          "bin/placeholder/MessagingService.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/MessagingService.dll": {}
+        }
       }
     }
   },
@@ -8503,11 +8513,17 @@
       "type": "project",
       "path": "../DiskFileUtility/FileService.csproj",
       "msbuildProject": "../DiskFileUtility/FileService.csproj"
+    },
+    "MessagingService/1.0.0": {
+      "type": "project",
+      "path": "../MessagingService/MessagingService.csproj",
+      "msbuildProject": "../MessagingService/MessagingService.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
       "FileService >= 1.0.0",
+      "MessagingService >= 1.0.0",
       "Microsoft.EntityFrameworkCore.SqlServer >= 3.1.2",
       "Microsoft.EntityFrameworkCore.Sqlite >= 3.1.2",
       "Microsoft.EntityFrameworkCore.Tools >= 3.1.2",
@@ -8550,6 +8566,9 @@
           "projectReferences": {
             "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\DiskFileUtility\\FileService.csproj": {
               "projectPath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\DiskFileUtility\\FileService.csproj"
+            },
+            "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\MessagingService.csproj": {
+              "projectPath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\MessagingService.csproj"
             }
           }
         }

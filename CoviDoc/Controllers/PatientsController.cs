@@ -8,6 +8,7 @@ using CoviDoc.Models;
 using CoviDoc.Models.Interfaces;
 using CoviDoc.ViewModels;
 using CoviDoc.Common;
+using MessagingService;
 
 namespace CoviDoc.Controllers
 {

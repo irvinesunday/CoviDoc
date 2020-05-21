@@ -173,3 +173,5 @@ C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\Razor
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\Razor\Views\About\Privacy.cshtml.g.cs
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.csproj.CoreCompileInputs.cache
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\CoviDoc.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\MessagingService.dll
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\MessagingService.pdb
