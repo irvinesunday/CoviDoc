@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CoviDoc.Models.Interfaces
 {
     public interface IDiagnosisReportRepository
     {
-        void AddDiagnosisReport(DiagnosisReport diagnosisReport);
-        List<DiagnosisReport> GetDiagnosisReports();
-        DiagnosisReport GetDiagnosisReport(Guid? patientId);
+        Task AddDiagnosisReport(DiagnosisReport diagnosisReport);
+        Task<List<DiagnosisReport>> GetDiagnosisReports();
+        Task<DiagnosisReport> GetDiagnosisReport(Guid? patientId);
     }
 }

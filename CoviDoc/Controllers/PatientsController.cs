@@ -32,7 +32,7 @@ namespace CoviDoc.Controllers
         // GET: Patients
         public async Task<IActionResult> Index()
         {
-            var patients = _patientRepository.GetPatients();
+            var patients = await _patientRepository.GetPatients();
             return View(patients);
         }
 
@@ -44,13 +44,13 @@ namespace CoviDoc.Controllers
                 return NotFound();
             }
 
-            var patient = _patientRepository.GetPatient(id);
+            var patient = await _patientRepository.GetPatient(id);
             if (patient == null)
             {
                 return NotFound();
             }
 
-            DiagnosisReport diagnosisReport = _diagnosisReportRepository.GetDiagnosisReport(patient.ID);
+            DiagnosisReport diagnosisReport = await _diagnosisReportRepository.GetDiagnosisReport(patient.ID);
             TestCentre testCentre = null;
 
             if (diagnosisReport != null)
@@ -67,23 +67,6 @@ namespace CoviDoc.Controllers
 
             return View(patientViewModel);
         }
-
-        // GET: Patients/Details/5
-        //public async Task<IActionResult> Details(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var patient = _patientRepository.GetPatients(id);
-        //    if (patient == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(patient);
-        //}
 
         // GET: Patients/Create
         public IActionResult Create()
@@ -134,7 +117,7 @@ namespace CoviDoc.Controllers
                     patient.IsAdult = Helpers.IsAdult(patient.DoB);
                     patient.DateRegistered = DateTime.Now;
 
-                    _patientRepository.AddPatient(patient);
+                    await _patientRepository.AddPatient(patient);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -162,7 +145,7 @@ namespace CoviDoc.Controllers
                 return NotFound();
             }
 
-            var patient = _patientRepository.GetPatient(id);
+            var patient = await _patientRepository.GetPatient(id);
             if (patient == null)
             {
                 return NotFound();
@@ -198,7 +181,7 @@ namespace CoviDoc.Controllers
                 try
                 {
                     patient.IsAdult = Helpers.IsAdult(patient.DoB);
-                    _patientRepository.UpdatePatient(patient);
+                    await _patientRepository.UpdatePatient(patient);
                 }
                 catch (ArgumentNullException)
                 {
@@ -230,7 +213,7 @@ namespace CoviDoc.Controllers
                 return NotFound();
             }
 
-            var patient = _patientRepository.GetPatient(id);
+            var patient = await _patientRepository.GetPatient(id);
             if (patient == null)
             {
                 return NotFound();
@@ -265,51 +248,44 @@ namespace CoviDoc.Controllers
                         DateTested = DateTime.Now
                     };
 
-                    _diagnosisReportRepository.AddDiagnosisReport(diagnosisReport);
+                    await _diagnosisReportRepository.AddDiagnosisReport(diagnosisReport);
 
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-
                     throw;
                 }
             }
             return RedirectToAction(nameof(Index));
         }
 
-        //// GET: Patients/Delete/5
-        //public async Task<IActionResult> Delete(Guid? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Patients/Delete/5
+        public async Task<IActionResult> Delete(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    var patient = await _context.Patient
-        //        .FirstOrDefaultAsync(m => m.ID == id);
-        //    if (patient == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var patient = await _patientRepository.GetPatient(id);
 
-        //    return View(patient);
-        //}
+            if (patient == null)
+            {
+                return NotFound();
+            }
 
-        //    // POST: Patients/Delete/5
-        //    [HttpPost, ActionName("Delete")]
-        //    [ValidateAntiForgeryToken]
-        //    public async Task<IActionResult> DeleteConfirmed(Guid id)
-        //    {
-        //        var patient = await _context.Patient.FindAsync(id);
-        //        _context.Patient.Remove(patient);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
+            return View(patient);
+        }
 
-        //    private bool PatientExists(Guid id)
-        //    {
-        //        return _context.Patient.Any(e => e.ID == id);
-        //    }
+        // POST: Patients/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            var patient = await _patientRepository.GetPatient(id);
+            await _patientRepository.DeactivatePatient(patient);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

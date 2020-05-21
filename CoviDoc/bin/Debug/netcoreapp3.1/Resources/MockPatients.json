@@ -68,7 +68,7 @@
     "Constituency": "DagorettiNorth",
     "Ward": "Kilimani",
     "IsAdult": true,
-    "IsActive": true,
+    "IsActive": false,
     "DateRegistered": "2020-05-20T11:11:32"
   },
   {

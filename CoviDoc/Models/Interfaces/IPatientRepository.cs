@@ -7,11 +7,11 @@ namespace CoviDoc.Models.Interfaces
 {
     public interface IPatientRepository
     {
-        void AddPatient(Patient patient);
-        void UpdatePatient(Patient patient);
-        void TestPatient(Patient patient, DiagnosisReport encounter);
-        List<Patient> GetPatients(string idNumber);
-        List<Patient> GetPatients();
-        Patient GetPatient(Guid? id);
+        Task AddPatient(Patient patient);
+        Task UpdatePatient(Patient patient);
+        Task<List<Patient>> GetPatients(string idNumber);
+        Task<List<Patient>> GetPatients();
+        Task<Patient> GetPatient(Guid? patientId);
+        Task DeactivatePatient(Patient patient);
     }
 }

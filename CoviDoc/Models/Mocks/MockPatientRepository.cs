@@ -1,29 +1,27 @@
-﻿using CoviDoc.Common;
-using CoviDoc.Models.Interfaces;
+﻿using CoviDoc.Models.Interfaces;
+using FileService;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-// using System.Text.Json;
 
 namespace CoviDoc.Models.Mocks
 {
     public class MockPatientRepository : IPatientRepository
     {
+        private readonly IFileUtility _fileUtility;
         private const string patientsFilePath = ".//Resources//MockPatients.json";
         private List<Patient> _patients;
 
-        public MockPatientRepository()
+        public MockPatientRepository(IFileUtility fileUtility)
         {
-            FetchPatients();
+            _fileUtility = fileUtility;
+            FetchPatients().GetAwaiter().GetResult();
         }
 
-        public void AddPatient(Patient patient)
+        public async Task AddPatient(Patient patient)
         {
             bool adultExists = _patients.Exists(p => p.IdNumber.Equals(patient.IdNumber) && p.IsAdult == true);
 
@@ -41,7 +39,7 @@ namespace CoviDoc.Models.Mocks
             if (index == -1) // patient doesn't exist
             {
                 _patients.Add(patient);
-                PostPatients(_patients);
+                await PostPatients(_patients);
             }
             else
             {
@@ -49,37 +47,34 @@ namespace CoviDoc.Models.Mocks
             }
         }
 
-        public Patient GetPatient(Guid? id)
+        public async Task<Patient> GetPatient(Guid? patientId)
         {
-            if (id == null)
+            if (patientId == null)
             {
                 return null;
             }
-            return _patients.FirstOrDefault(p => p.ID.Equals(id));
+            return _patients.FirstOrDefault(p => p.ID.Equals(patientId));
         }
-        public List<Patient> GetPatients(string idNumber)
+        public async Task<List<Patient>> GetPatients(string idNumber)
         {
             // Patients with matching IdNumbers could be parent/child
-            return _patients.FindAll(p => p.IdNumber.Equals(idNumber))
+            return _patients.FindAll(p => p.IdNumber.Equals(idNumber) && p.IsActive)
                             .OrderByDescending(p => p.DateRegistered)
                             .ToList();
         }
 
-        public List<Patient> GetPatients()
+        public async Task<List<Patient>> GetPatients()
         {
-            return _patients.OrderByDescending(p => p.DateRegistered).ToList();
+            return _patients.Where(p => p.IsActive)
+                            .OrderByDescending(p => p.DateRegistered)
+                            .ToList();
         }
 
-        public void TestPatient(Patient patient, DiagnosisReport encounter)
+        public async Task UpdatePatient(Patient patient)
         {
-            throw new NotImplementedException();
-        }
+            int index = _patients.FindIndex(p => p.ID.Equals(patient.ID) && p.IsActive);
 
-        public void UpdatePatient(Patient patient)
-        {
-            int index = _patients.FindIndex(p => p.ID.Equals(patient.ID));
-
-            // Checked that we are not updating to an already existing Id/Passport Number
+            // Check that we are not updating to an already existing Id/Passport Number
             bool adultExists = _patients.Exists(p => p.IdNumber.Equals(patient.IdNumber, StringComparison.OrdinalIgnoreCase) &&
                                                 p.IsAdult == true && p.ID != patient.ID);
 
@@ -96,7 +91,7 @@ namespace CoviDoc.Models.Mocks
             {
                 _patients.RemoveAt(index);
                 _patients.Insert(index, patient);
-                PostPatients(_patients);
+                await PostPatients(_patients);
             }
             else
             {
@@ -104,11 +99,23 @@ namespace CoviDoc.Models.Mocks
             }
         }
 
-        private void FetchPatients()
+        public async Task DeactivatePatient(Patient patient)
+        {
+            int index = _patients.FindIndex(p => p.ID.Equals(patient.ID));
+
+            if (index > -1)
+            {
+                patient.IsActive = false;
+            }
+
+            await PostPatients(_patients);
+        }
+
+        private async Task FetchPatients()
         {
             try
             {
-                string jsonString = ReadFromFile(patientsFilePath).GetAwaiter().GetResult();
+                string jsonString = await _fileUtility.ReadFromFileAsync(patientsFilePath);
                 _patients = JsonConvert.DeserializeObject<List<Patient>>(jsonString, new IsoDateTimeConverter());
             }
             catch (Exception ex)
@@ -117,29 +124,17 @@ namespace CoviDoc.Models.Mocks
             }
         }
 
-        private void PostPatients(List<Patient> patients)
+        private async Task PostPatients(List<Patient> patients)
         {
             try
             {
                 string jsonString = JsonConvert.SerializeObject(patients, Formatting.Indented);
-                WriteToFile(jsonString, patientsFilePath).GetAwaiter().GetResult();
+                await _fileUtility.WriteToFileAsync(jsonString, patientsFilePath);
             }
             catch (Exception ex)
             {
                 throw;
             }
-        }
-
-        private async Task<string> ReadFromFile(string filePathSource)
-        {
-            using StreamReader streamReader = new StreamReader(filePathSource);
-            return await streamReader.ReadToEndAsync();
-        }
-
-        public async Task WriteToFile(string fileContents, string filePathSource)
-        {
-            using StreamWriter streamWriter = new StreamWriter(filePathSource);
-            await streamWriter.WriteLineAsync(fileContents);
         }
     }
 }
