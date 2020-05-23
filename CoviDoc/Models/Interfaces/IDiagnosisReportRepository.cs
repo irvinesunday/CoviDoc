@@ -8,6 +8,8 @@ namespace CoviDoc.Models.Interfaces
     {
         Task AddDiagnosisReport(DiagnosisReport diagnosisReport);
         Task<List<DiagnosisReport>> GetDiagnosisReports();
-        Task<DiagnosisReport> GetDiagnosisReport(Guid? patientId);
+        Task<DiagnosisReport> GetDiagnosisReport(Guid? reportId);
+        Task<DiagnosisReport> GetDiagnosisReport(Patient patient);
+        Task<List<DiagnosisReport>> GetDiagnosisReports(List<Patient> patient);
     }
 }

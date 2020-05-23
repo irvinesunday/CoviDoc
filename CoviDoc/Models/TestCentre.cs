@@ -9,7 +9,7 @@ namespace CoviDoc.Models
     public class TestCentre
     {
         public Guid ID { get; set; }
-        [Display(Name = "Test Centre Name")]
+        [Display(Name = "Test Centre")]
         public string Name { get; set; }
         public string County { get; set; }
         public string Constituency { get; set; }

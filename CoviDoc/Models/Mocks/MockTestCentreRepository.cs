@@ -19,7 +19,7 @@ namespace CoviDoc.Models.Mocks
         public MockTestCentreRepository(IFileUtility fileUtility)
         {
             _fileUtility = fileUtility;
-            FetchTestCentres();
+            FetchTestCentres().GetAwaiter().GetResult();
         }
 
         public IEnumerable<SelectListItem> GetTestCentres()
@@ -46,11 +46,11 @@ namespace CoviDoc.Models.Mocks
             return testCentreId == null ? null : _testCentres.FirstOrDefault(x => x.ID == testCentreId);
         }
 
-        private void FetchTestCentres()
+        private async Task FetchTestCentres()
         {
             try
             {
-                string jsonString = _fileUtility.ReadFromFileAsync(testCentresFilePath).GetAwaiter().GetResult();
+                string jsonString = await _fileUtility.ReadFromFileAsync(testCentresFilePath);
                 _testCentres = JsonConvert.DeserializeObject<List<TestCentre>>(jsonString);
             }
             catch (Exception ex)

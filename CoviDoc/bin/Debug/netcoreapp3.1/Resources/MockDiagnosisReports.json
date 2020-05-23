@@ -1,12 +1,5 @@
 [
   {
-    "DiagnosisReportId": "fc9c9832-399d-47ef-941c-46ada54e9a49",
-    "PatientId": "2428e6f5-be97-4943-aa4a-55588454a36b",
-    "TestCentreId": "7867209e-306d-41d2-bce7-30ca56bbab54",
-    "TestStatus": "Pending",
-    "DateTested": null
-  },
-  {
     "DiagnosisReportId": "6ba9e12c-693e-4950-9a56-605e1ad31595",
     "PatientId": "7eeed2d8-5961-45d0-a865-aa4f36f67ac9",
     "TestCentreId": "7867209e-306d-41d2-bce7-30ca56bbab54",

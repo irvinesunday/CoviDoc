@@ -22,5 +22,27 @@ namespace CoviDoc.Common
         {
             return constituencyName.Replace(" ", string.Empty);
         }
+
+        /// <summary>
+        /// Replaces country code with '0' if exists and replaces 0 with country code, if exists.
+        /// </summary>
+        /// <param name="mobileNumber"></param>
+        /// <param name="countryCode"></param>
+        /// <returns></returns>
+        public static string FormatMobileNumber(string mobileNumber, string countryCode = Constants.CountryCodes.KENYA)
+        {
+            if (string.IsNullOrEmpty(mobileNumber))
+            {
+                return null;
+            }
+
+            if (mobileNumber.StartsWith('+'))
+            {
+                // Remove country code if exists
+                return $"0{mobileNumber.Remove(0, countryCode.Length)}";
+            }
+            // Add country code if none exists
+            return $"{countryCode}{mobileNumber.Remove(0, 1)}";
+        }
     }
 }

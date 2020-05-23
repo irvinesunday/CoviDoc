@@ -12,8 +12,8 @@ namespace CoviDoc.Models
         public Guid TestCentreId { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         [Display(Name = "Test Result")]
-        public TestStatus TestStatus { get; set; } = Enums.TestStatus.Pending;
+        public TestStatus TestStatus { get; set; } = TestStatus.Pending;
         [Display(Name = "Date Tested")]
-        public DateTime? DateTested { get; set; }
+        public DateTime DateTested { get; set; }
     }
 }
