@@ -19,6 +19,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using FileService;
 using Microsoft.Extensions.Logging;
+using Ngrok.AspNetCore;
+
 
 namespace CoviDoc
 {
@@ -100,6 +102,18 @@ namespace CoviDoc
                     };
                 });
 
+            #region Ngrok
+
+            //services.AddNgrok(options =>
+            //{
+            //    options.DetectUrl = true;
+            //    options.DownloadNgrok = true;
+            //    options.ManageNgrokProcess = true;
+            //    options.RedirectLogs = true;
+            //    options.Disable = !_environment.IsDevelopment();
+            //});
+
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
