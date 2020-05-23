@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CoviDoc.Common;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
@@ -12,26 +13,29 @@ using JsonConverter = Newtonsoft.Json.JsonConverter;
 namespace CoviDoc.Models
 {
     /// <summary>
-    /// Cannot update the IdNumber/Names/DateRegistered of patient
+    /// Cannot update the DateRegistered of patient
     /// </summary>
     public class Patient
     {
         public Guid ID { get; set; }
 
         [Required]
-        [StringLength(50)]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
+        [StringLength(50, MinimumLength = 2)]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$",
+            ErrorMessage = "Must start with a capital letter and cannot include special characters.")]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
-        [StringLength(50)]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
+        [StringLength(50, MinimumLength = 2)]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$",
+            ErrorMessage ="Must start with a capital letter and cannot include special characters.")]
         [Display(Name = "Middle Name")]
         public string MiddleName { get; set; }
 
         [Required]
-        [StringLength(50)]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$")]
+        [StringLength(50, MinimumLength = 2)]
+        [RegularExpression(@"^[A-Z]+[a-zA-Z""'\s-]*$",
+            ErrorMessage = "Must start with a capital letter and cannot include special characters.")]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
@@ -52,17 +56,25 @@ namespace CoviDoc.Models
 
         public string Nationality { get; set; }
 
+        private string _mobileNumber;
         [Required]
-        [Display(Name = "Mobile")]
-        public string MobileNumber { get; set; }
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$",
+            ErrorMessage = "Not a valid mobile number.")]
+        [DataType(DataType.PhoneNumber)]
+        [Display(Name = "Mobile Number")]
+        public string MobileNumber
+        {
+            get => _mobileNumber;
+            set => _mobileNumber = Helpers.FormatMobileNumber(value);
+        }
         public string County { get; set; }
         public string Constituency { get; set; }
         public string Ward { get; set; }
         public bool IsAdult { get; set; }
         public bool IsActive { get; set; } = true;
 
-        [DataType(DataType.DateTime)]
-        [Display(Name = "Date Of Registration")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Date of Reg.")]
         public DateTime DateRegistered { get; set; }
 
     }

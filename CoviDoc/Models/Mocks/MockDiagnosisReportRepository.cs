@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace CoviDoc.Models.Mocks
@@ -33,16 +32,47 @@ namespace CoviDoc.Models.Mocks
 
         public async Task<List<DiagnosisReport>> GetDiagnosisReports()
         {
-            return _diagnosisReports;
+            return _diagnosisReports.OrderByDescending(x => x.DateTested).ToList();
         }
 
-        public async Task<DiagnosisReport> GetDiagnosisReport(Guid? patientId)
+        public async Task<DiagnosisReport> GetDiagnosisReport(Patient patient)
         {
-            if (patientId == null)
+            if (patient == null)
             {
                 return null;
             }
-            return _diagnosisReports.LastOrDefault(x => x.PatientId == patientId);
+            return _diagnosisReports.LastOrDefault(x => x.PatientId == patient.ID);
+        }
+
+        public async Task<List<DiagnosisReport>> GetDiagnosisReports(List<Patient> patients)
+        {
+            if(patients == null || !patients.Any())
+            {
+                return null;
+            }
+
+            var diagnosisReports = new List<DiagnosisReport>();
+
+            foreach(var patient in patients)
+            {
+                var item = _diagnosisReports.LastOrDefault(x => x.PatientId == patient.ID);
+                if (item != null)
+                {
+                    diagnosisReports.Add(item);
+                }
+            }
+
+            return diagnosisReports;
+        }
+
+        public async Task<DiagnosisReport> GetDiagnosisReport(Guid? reportId)
+        {
+            if (reportId == null)
+            {
+                return null;
+            }
+
+            return _diagnosisReports.FirstOrDefault(x => x.DiagnosisReportId == reportId);
         }
 
         private async Task FetchDiagnosisReports()

@@ -31,9 +31,20 @@ namespace CoviDoc.Controllers
         }
 
         // GET: Patients
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string idNumber, string name)
         {
-            var patients = await _patientRepository.GetPatients();
+            IEnumerable<Patient> patients = await _patientRepository.GetPatients();
+
+            if(!string.IsNullOrEmpty(idNumber))
+            {
+                patients = patients.Where(p => p.IdNumber.Equals(idNumber, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                patients = patients.Where(p => p.FullName.Contains(name, StringComparison.OrdinalIgnoreCase));
+            }
+
             return View(patients);
         }
 
@@ -51,7 +62,7 @@ namespace CoviDoc.Controllers
                 return NotFound();
             }
 
-            DiagnosisReport diagnosisReport = await _diagnosisReportRepository.GetDiagnosisReport(patient.ID);
+            DiagnosisReport diagnosisReport = await _diagnosisReportRepository.GetDiagnosisReport(patient);
             TestCentre testCentre = null;
 
             if (diagnosisReport != null)
@@ -115,6 +126,7 @@ namespace CoviDoc.Controllers
                 try
                 {
                     patient.ID = Guid.NewGuid();
+                    patient.MobileNumber = Helpers.FormatMobileNumber(patient.MobileNumber);
                     patient.IsAdult = Helpers.IsAdult(patient.DoB);
                     patient.DateRegistered = DateTime.Now;
 
@@ -181,6 +193,7 @@ namespace CoviDoc.Controllers
             {
                 try
                 {
+                    patient.MobileNumber = Helpers.FormatMobileNumber(patient.MobileNumber);
                     patient.IsAdult = Helpers.IsAdult(patient.DoB);
                     await _patientRepository.UpdatePatient(patient);
                 }

@@ -9,6 +9,15 @@
 <p>
     <a asp-action="Create">Add New</a>
 </p>
+<form asp-controller="Patients" asp-action="Index" method="get">
+    <p>
+        Id No. : <input type="text" name="IdNumber">
+        <input type="submit" value="Filter" />
+        Name: <input type="text" name="Name">
+        <input type="submit" value="Filter" /> |
+        <a asp-action="Index">List</a>
+    </p>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -25,16 +34,7 @@
                 @Html.DisplayNameFor(model => model.Gender)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Nationality)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MobileNumber)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.IsAdult)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.DateRegistered)
@@ -58,16 +58,7 @@
                 @Html.DisplayFor(modelItem => item.Gender)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Nationality)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MobileNumber)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.IsAdult)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DateRegistered)
