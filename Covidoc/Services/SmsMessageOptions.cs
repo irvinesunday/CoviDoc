@@ -10,21 +10,13 @@ namespace CoviDoc.Services
             Enqueue = 1;
             RetryDurationInHours = 1;
             LinkId = string.Empty;
-            Keyword = string.Empty;
         }
 
-        public SmsMessageOptions(string userName, Uri apiHost) : this()
+        public SmsMessageOptions(string userName, Uri apiHost, string keyWord) : this()
         {
-            if (string.IsNullOrWhiteSpace(userName))
-            {
-                throw new ArgumentNullException(nameof(userName));
-            }
-            if (apiHost == null)
-            {
-                throw new ArgumentNullException(nameof(apiHost));
-            }
-            this.UserName = userName;
-            this.ApiHost = apiHost;
+            this.UserName = !string.IsNullOrWhiteSpace(userName) ? userName : throw new ArgumentNullException(nameof(userName));
+            this.Keyword = !string.IsNullOrWhiteSpace(keyWord) ? keyWord : throw new ArgumentNullException(nameof(keyWord));
+            this.ApiHost = apiHost ?? throw new ArgumentNullException(nameof(apiHost));
         }
 
         public int BulkSmsMode { get; }

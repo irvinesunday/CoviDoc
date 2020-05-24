@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CoviDoc.Controllers.Notifications.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -14,9 +15,9 @@ namespace CoviDoc.Controllers.Notifications
         {
             _logger = logger;
         }
-        public async Task<IActionResult> Post([FromBody] string content)
+        public async Task<IActionResult> Post([FromForm] SubscriptionNotification content)
         {
-            _logger.LogInformation(content);
+            _logger.LogInformation(content.Keyword);
             return Ok();
         }
     }

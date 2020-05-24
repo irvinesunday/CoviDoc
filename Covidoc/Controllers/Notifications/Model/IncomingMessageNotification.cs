@@ -11,5 +11,6 @@ namespace CoviDoc.Controllers.Notifications.Model
         public string Text { get; set; }
         public string To { get; set; }
         public string NetworkCode { get; set; }
+        public string Cost { get; set; }
     }
 }

@@ -55,13 +55,13 @@ namespace CoviDoc
             {
                 if (_environment.IsDevelopment())
                 {
-                    var smsMessageOptions = new SmsMessageOptions("sandbox", Constants.SandboxApiHostUri);
+                    var smsMessageOptions = new SmsMessageOptions("sandbox", Constants.SandboxApiHostUri, "AFRICASTKNG");
                     return smsMessageOptions;
                 }
                 else
                 {
                     var config = provider.GetRequiredService<CoviDocConfig>();
-                    var smsMessageOptions = new SmsMessageOptions(config.ATUserName, Constants.SandboxApiHostUri);
+                    var smsMessageOptions = new SmsMessageOptions(config.ATUserName, Constants.LiveApiHostUri, config.KeyWord);
                     return smsMessageOptions;
                 }
             });

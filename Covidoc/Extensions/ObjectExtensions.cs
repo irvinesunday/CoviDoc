@@ -1,28 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Net.Http;
+using CoviDoc.Services;
 using CoviDoc.Services.Models;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json.Linq;
 
-namespace CoviDoc.Services
+namespace CoviDoc.Extensions
 {
     public static class ObjectExtensions
     {
         public static FormUrlEncodedContent ToFormUrlEncodedContent(this SmsMessage message, SmsMessageOptions options)
         {
-            var smsMessageDictionary = message.ToKeyValue();
-            var smsMessageOptionsDictionary = options.ToKeyValue();
-            smsMessageDictionary.ToList().ForEach(x => smsMessageOptionsDictionary[x.Key] = x.Value);
-            return new FormUrlEncodedContent(smsMessageOptionsDictionary);
+            var mergedDictionary = new Dictionary<string, string>();
+            message.ToKeyValue(ref mergedDictionary);
+            options.ToKeyValue(ref mergedDictionary);
+            return new FormUrlEncodedContent(mergedDictionary);
         }
 
-        public static IDictionary<string, string> ToKeyValue(this SmsMessage message)
+        public static void ToKeyValue(this SmsMessage message, ref Dictionary<string, string> contentDict)
         {
-            var dictionary = new Dictionary<string, string>();
+            if (contentDict == null)
+            {
+                throw new ArgumentNullException(nameof(contentDict));
+            }
             if (string.IsNullOrWhiteSpace(message.Message))
             {
                 throw new ArgumentNullException(message.Message);
@@ -31,32 +30,34 @@ namespace CoviDoc.Services
             {
                 throw new ArgumentNullException(message.To);
             }
-            dictionary.Add("message", message.Message);
-            dictionary.Add("to", message.To);
-            return dictionary;
+            contentDict.Add("message", message.Message);
+            contentDict.Add("to", message.To);
         }
-        public static IDictionary<string, string> ToKeyValue(this SmsMessageOptions message)
+        public static void ToKeyValue(this SmsMessageOptions message, ref Dictionary<string, string> contentDict)
         {
-            var dictionary = new Dictionary<string, string> { { "bulkSmsMode", message.BulkSmsMode.ToString() } };
+            if (contentDict == null)
+            {
+                throw new ArgumentNullException(nameof(contentDict));
+            }
+            contentDict.Add("bulkSmsMode", message.BulkSmsMode.ToString());
             if (string.IsNullOrWhiteSpace(message.UserName))
             {
                 throw new ArgumentNullException(message.UserName);
             }
             else
             {
-                dictionary.Add("username", message.UserName);
+                contentDict.Add("username", message.UserName);
             }
             if (!string.IsNullOrWhiteSpace(message.Keyword))
             {
-                dictionary.Add("keyword", message.Keyword);
+                contentDict.Add("keyword", message.Keyword);
             }
             if (!string.IsNullOrWhiteSpace(message.LinkId))
             {
-                dictionary.Add("linkId", message.LinkId);
+                contentDict.Add("linkId", message.LinkId);
             }
-            dictionary.Add("enqueue", message.Enqueue.ToString());
-            dictionary.Add("retryDurationInHours", message.RetryDurationInHours.ToString());
-            return dictionary;
+            contentDict.Add("enqueue", message.Enqueue.ToString());
+            contentDict.Add("retryDurationInHours", message.RetryDurationInHours.ToString());
         }
     }
 }
