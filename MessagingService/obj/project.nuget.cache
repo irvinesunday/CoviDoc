@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "AXyg9Ym0qbYe78jhBzFbpx/z1T9S3Z51+ZJxefjnU6Gahp36heTttbJrj++Kt7UiLSh82Tw8XAxx3kuVFL7K9g==",
+  "dgSpecHash": "TpTnjlx+872xHZV3myoqq8oJsHpa2/EvahUPcsGCv/Nv8vYFFNchCxXe7/2ncIeR+hSEuPviQHbrZW/DkRNacQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\MessagingService.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\EmailService.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\v-irsund\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\3.1.5\\microsoft.extensions.configuration.abstractions.3.1.5.nupkg.sha512",
+    "C:\\Users\\v-irsund\\.nuget\\packages\\microsoft.extensions.primitives\\3.1.5\\microsoft.extensions.primitives.3.1.5.nupkg.sha512"
+  ],
   "logs": []
 }

@@ -4,11 +4,7 @@ using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using static CoviDoc.Models.Enums;
-using JsonConverter = Newtonsoft.Json.JsonConverter;
 
 namespace CoviDoc.Models
 {
@@ -51,15 +47,16 @@ namespace CoviDoc.Models
         public DateTime DoB { get; set; }
 
         [Required]
+        [JsonProperty(Required = Required.Always, PropertyName = "Gender")]
         [JsonConverter(typeof(StringEnumConverter))]
-        public Gender Gender { get; set; } = Gender.Uknown;
+        public Gender Gender { get; set; }
 
         public string Nationality { get; set; }
 
         private string _mobileNumber;
+        //  @"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$"
         [Required]
-        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$",
-            ErrorMessage = "Not a valid mobile number.")]
+       // [RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Not a valid mobile number.")]
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Mobile Number")]
         public string MobileNumber
@@ -67,6 +64,11 @@ namespace CoviDoc.Models
             get => _mobileNumber;
             set => _mobileNumber = Helpers.FormatMobileNumber(value);
         }
+
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "Email Address")]
+        public string EmailAddress { get; set; }
+
         public string County { get; set; }
         public string Constituency { get; set; }
         public string Ward { get; set; }
@@ -76,6 +78,6 @@ namespace CoviDoc.Models
         [DataType(DataType.Date)]
         [Display(Name = "Date of Reg.")]
         public DateTime DateRegistered { get; set; }
-
+        public List<Guid> ChildrenIds { get; set; }
     }
 }

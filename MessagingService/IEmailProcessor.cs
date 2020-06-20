@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MessagingService
 {
-    public interface IMessageProcessor
+    public interface IEmailProcessor
     {
         Task SendMessageAsync();
         Task ReceiveMessageAsync();

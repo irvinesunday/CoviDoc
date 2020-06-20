@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <div style="border-top: 3px solid #22BCE5">
+        &nbsp;
+    </div>
+    <span style="font-family: Arial; font-size: 10pt">
+        Hello <b>{PatientFirstName}</b>,<br />
+        <br />
+        Your details have successfully been registered with the Ministry of Health.<br />
+        <!--<a style="color: #22BCE5" href="{Url}">{Title}</a><br />-->
+        <br />
+        <b>Name:</b> {PatientFullName}
+        <br />
+        <b>ID/Passport Number:</b> {PatientIdNumber}
+        <br />
+        <b>Date of Registration:</b> {RegistrationDate}
+        <br />
+        <br />
+        <img src="{QRCode}" alt="PatientQRCode" width="200" height="200" />
+        <br />
+        The above QR Code is your <b>Digital COVID-19 Certificate</b>.
+        <br />
+        You can also get it anytime from this link: <a href="{LinkToCertificate}">MyCovid19Certificate</a>.
+        <br />
+        <br />
+        Warm Regards,
+        <br />
+        <br />
+        MyCovidStatus Team / Min. of Health / GoK
+        <br />
+        <br />
+        <img src="{BaseUrl}/images/MyCovidStatusLogo.jpeg" alt="mycovstatuslogo" width="300" height="52" />
+        <br />
+        <br />
+        <br />
+        <b>NB:</b> This is a system generated email, please <b>DO-NOT</b> reply, we will not be around to respond :)
+    </span>
+</body>
+</html>

@@ -1,0 +1,26 @@
+[
+  {
+    "CertificateId": "24375634-YWOO",
+    "DiagnosisReportId": "6a4dcb54-6ecf-448b-afe7-b84df6a4e926",
+    "PatientId": "7eeed2d8-5961-45d0-a865-aa4f36f67ac9",
+    "Name": "Clare Adhiambo Ochanda",
+    "IdNumber": "24375634",
+    "IsAdult": true,
+    "Status": 2,
+    "TestCentre": "The Agha Khan Hospital",
+    "TestDate": "2020-06-05T20:41:12.6250353Z",
+    "ChildrenIds": null
+  },
+  {
+    "CertificateId": "23340530-ZTPBT",
+    "DiagnosisReportId": "0ca9e34d-3bab-4a0b-ace4-d5bc565c6dd6",
+    "PatientId": "2428e6f5-be97-4943-aa4a-55588454a36b",
+    "Name": "Paul Miki Onyango",
+    "IdNumber": "23340530",
+    "IsAdult": true,
+    "Status": 2,
+    "TestCentre": "The Agha Khan Hospital",
+    "TestDate": "2020-06-06T01:43:13.4823155Z",
+    "ChildrenIds": null
+  }
+]

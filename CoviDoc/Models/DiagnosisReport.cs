@@ -9,7 +9,7 @@ namespace CoviDoc.Models
     {
         public Guid? DiagnosisReportId { get; set; }
         public Guid? PatientId { get; set; }
-        public Guid TestCentreId { get; set; }
+        public string TestCentre { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         [Display(Name = "Test Result")]
         public TestStatus TestStatus { get; set; } = TestStatus.Pending;

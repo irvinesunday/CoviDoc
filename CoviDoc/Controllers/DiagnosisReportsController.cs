@@ -2,91 +2,278 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CoviDoc.Common;
 using CoviDoc.Models;
 using CoviDoc.Models.Interfaces;
-using CoviDoc.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace CoviDoc.Controllers
 {
-    public class DiagnosisReportsController : Controller
+    // [Route("api/[controller]")]
+    [ApiController]
+    public class DiagnosisReportsController : ControllerBase
     {
+
         readonly IPatientRepository _patientRepository;
-        readonly ITestCentreRepository _testCentreRepository;
         readonly IDiagnosisReportRepository _diagnosisReportRepository;
+        readonly IHealthCertificateRepository _healthCertificateRepository;
 
         public DiagnosisReportsController(IPatientRepository patientRepository,
-                                         ITestCentreRepository testCentreRepository,
-                                         IDiagnosisReportRepository diagnosisReportRepository)
+                                        IDiagnosisReportRepository diagnosisReportRepository,
+                                        IHealthCertificateRepository healthCertificateRepository)
         {
             _patientRepository = patientRepository;
-            _testCentreRepository = testCentreRepository;
             _diagnosisReportRepository = diagnosisReportRepository;
+            _healthCertificateRepository = healthCertificateRepository;
         }
-        public async Task<IActionResult> Index(string idNumber, string name)
+
+        // GET: api/DiagnosisReports
+        [HttpGet]
+        [Produces("application/json")]
+        [Route("api/[controller]")]
+        public async Task<IActionResult> GetDiagnosisReportssAsync(string idNumber, Guid patientId)
         {
-            List<DiagnosisReport> diagnosisReports = new List<DiagnosisReport>();
-            List<Patient> patients = await _patientRepository.GetPatients();
+            if (!string.IsNullOrEmpty(idNumber) && patientId != Guid.Empty)
+            {
+                // Cannot define both parameters
+                return BadRequest();
+            }
+
+            var diagnosisReportsVMs = new List<DiagnosisReportViewModel>();
+
+            if (patientId != Guid.Empty)
+            {
+               var result = await GetUserDiagnosisReportsByPatientIdAsync(patientId);
+
+                if (result == null)
+                {
+                    // Fetch patient
+                    var patient = await _patientRepository.GetPatient(patientId);
+
+                    if (patient == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Patient not yet tested, return default data
+                    var diagnosisReportVM = new DiagnosisReportViewModel
+                    {
+                        PatientId = patient.ID,
+                        PatientGender = patient.Gender,
+                        PatientName = patient.FullName,
+                        PatientIdNumber = patient.IdNumber
+                    };
+                    diagnosisReportsVMs.Add(diagnosisReportVM);
+                    return Ok(diagnosisReportsVMs);
+                }
+
+                diagnosisReportsVMs.Add(result);
+                return Ok(diagnosisReportsVMs);
+            }
 
             if (!string.IsNullOrEmpty(idNumber))
             {
-                List<Patient> filteredPatients = patients.Where(p => p.IdNumber.Equals(idNumber, StringComparison.OrdinalIgnoreCase)).ToList();
+                var result = await GetUserDiagnosisByIdNumberAsync(idNumber);
 
-                if (filteredPatients != null)
+                if (result == null || !result.Any())
                 {
-                    diagnosisReports = await _diagnosisReportRepository.GetDiagnosisReports(filteredPatients);
+                    return NotFound();
                 }
-            }
-            else if (!string.IsNullOrEmpty(name))
-            {
-                List<Patient> filteredPatients = patients.Where(p => p.FullName.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
 
-                if (filteredPatients != null)
-                {
-                    diagnosisReports = await _diagnosisReportRepository.GetDiagnosisReports(filteredPatients);
-                }
-            }
-            else
-            {
-                diagnosisReports = await _diagnosisReportRepository.GetDiagnosisReports();
+                return Ok(result);
             }
 
-            List<DiagnosisReportViewModel> diagnosisReportsVM = new List<DiagnosisReportViewModel>();
+            // Fetch all diagnosis reports
+            var diagnosisReports = await _diagnosisReportRepository.GetDiagnosisReports();
 
-            foreach(var report in diagnosisReports)
-            {
-                var diagnosisReportVM = new DiagnosisReportViewModel
-                {
-                    Patient = patients.FirstOrDefault(p => p.ID == report.PatientId),
-                    TestCentre =  _testCentreRepository.GetTestCentre(report.TestCentreId),
-                    DiagnosisReport = report
-                };
-                diagnosisReportsVM.Add(diagnosisReportVM);
-            }
-
-            return View(diagnosisReportsVM);
-        }
-
-        public async Task<IActionResult> Details(Guid id)
-        {
-            if (id == null)
+            if (diagnosisReports == null || !diagnosisReports.Any())
             {
                 return NotFound();
             }
 
-            var diagnosisReport = await _diagnosisReportRepository.GetDiagnosisReport(id);
-            var patient = await _patientRepository.GetPatient(diagnosisReport.PatientId);
+            foreach (var diagnosisReport in diagnosisReports)
+            {
+                var patient = await _patientRepository.GetPatient(diagnosisReport.PatientId);
+
+                if (patient != null)
+                {
+                    var diagnosisReportVM = new DiagnosisReportViewModel
+                    {
+                        PatientId = patient.ID,
+                        PatientIdNumber = patient.IdNumber,
+                        PatientName = patient.FullName,
+                        PatientGender = patient.Gender,
+                        TestStatus = diagnosisReport.TestStatus,
+                        TestCentre = diagnosisReport.TestCentre,
+                        DateTested = diagnosisReport.DateTested
+                    };
+
+                    diagnosisReportsVMs.Add(diagnosisReportVM);
+                }
+            }
+
+            return Ok(diagnosisReportsVMs);
+        }
+
+        [HttpGet]
+        [Produces("application/json")]
+        [Route("api/[controller]/{patientId}")]
+        public async Task<IActionResult> GetDiagnosisReportsAsync(Guid patientId)
+        {
+            if (patientId == Guid.Empty)
+            {
+                return BadRequest();
+            }
+
+            var result = await GetUserDiagnosisReportsByPatientIdAsync(patientId);
+
+            if (result == null)
+            {
+                // Fetch patient
+                var patient = await _patientRepository.GetPatient(patientId);
+
+                if (patient == null)
+                {
+                    return NotFound();
+                }
+
+                // Patient not yet tested, return default data
+                var diagnosisReportVM = new DiagnosisReportViewModel
+                {
+                    PatientId = patient.ID,
+                    PatientGender = patient.Gender,
+                    PatientName = patient.FullName,
+                    PatientIdNumber = patient.IdNumber
+                };
+                return Ok(diagnosisReportVM);
+            }
+
+            return Ok(result);
+        }
+
+        // POST: api/DiagnosisReports
+        [HttpPost]
+        [Route("api/[controller]")]
+        [Produces("application/json")]
+        public async Task<IActionResult> PostDiagnosisReportsAsync([FromBody] DiagnosisReportViewModel diagnosisReportVM)
+        {
+            if (diagnosisReportVM != null)
+            {
+                var diagnosisReport = new DiagnosisReport
+                {
+                    DiagnosisReportId = Guid.NewGuid(),
+                    DateTested = DateTime.UtcNow.AddHours(3),
+                    PatientId = diagnosisReportVM.PatientId,
+                    TestCentre = diagnosisReportVM.TestCentre,
+                    TestStatus = diagnosisReportVM.TestStatus
+                };
+                await _diagnosisReportRepository.AddDiagnosisReport(diagnosisReport);
+                string diagnosisReportUri = string.Format("{0}://{1}{2}/{3}", Request.Scheme, Request.Host, Request.Path.Value, diagnosisReport.DiagnosisReportId.ToString());
+
+                // Create Health Certificate
+                var healthCertificate = new HealthCertificate
+                {
+                    DiagnosisReportId = diagnosisReport.DiagnosisReportId,
+                    PatientId = diagnosisReportVM.PatientId,
+                    IdNumber = diagnosisReportVM.PatientIdNumber,
+                    MobileNumber = diagnosisReportVM.MobileNumber,
+                    IsAdult = diagnosisReportVM.IsAdult,
+                    Name = diagnosisReportVM.PatientName,
+                    Status = diagnosisReportVM.TestStatus,
+                    TestCentre = diagnosisReportVM.TestCentre,
+                    TestDate = diagnosisReport.DateTested,
+                    CertificateId = $"{diagnosisReportVM.PatientIdNumber}-{Helpers.GenerateCertificateId(5)}"
+                };
+                await _healthCertificateRepository.AddHealthCertificate(healthCertificate);
+
+                // Send Test success alert
+
+                return Created(diagnosisReportUri, diagnosisReport);
+            }
+            return BadRequest();
+        }
+
+        private async Task<DiagnosisReportViewModel> GetUserDiagnosisReportsByPatientIdAsync(Guid patientId)
+        {
+            if (patientId == Guid.Empty)
+            {
+                return null;
+            }
+
+            var patient = await _patientRepository.GetPatient(patientId);
+
+            if (patient == null)
+            {
+                return null;
+            }
+            var diagnosisReport = await _diagnosisReportRepository.GetDiagnosisReport(patient);
+
+            if (diagnosisReport == null)
+            {
+                return null;
+            }
 
             var diagnosisReportVM = new DiagnosisReportViewModel
             {
-                Patient = await _patientRepository.GetPatient(diagnosisReport.PatientId),
-                TestCentre = _testCentreRepository.GetTestCentre(diagnosisReport.TestCentreId),
-                DiagnosisReport = diagnosisReport
+                PatientId = patient.ID,
+                PatientIdNumber = patient.IdNumber,
+                PatientName = patient.FullName,
+                PatientGender = patient.Gender,
+                MobileNumber = patient.MobileNumber,
+                IsAdult = patient.IsAdult,
+                TestStatus = diagnosisReport.TestStatus,
+                TestCentre = diagnosisReport.TestCentre,
+                DateTested = diagnosisReport.DateTested
             };
 
-            return View(diagnosisReportVM);
+            return diagnosisReportVM;
         }
 
+        private async Task<List<DiagnosisReportViewModel>> GetUserDiagnosisByIdNumberAsync(string idNumber)
+        {
+            var patients = await _patientRepository.GetPatients(idNumber);
+
+            if (patients == null)
+            {
+                return null;
+            }
+
+            var diagnosisReportsVMs = new List<DiagnosisReportViewModel>();
+
+            foreach (var patient in patients)
+            {
+                var diagnosisReport = await _diagnosisReportRepository.GetDiagnosisReport(patient);
+
+                if (diagnosisReport != null)
+                {
+                    var diagnosisReportVM = new DiagnosisReportViewModel
+                    {
+                        PatientId = patient.ID,
+                        PatientIdNumber = patient.IdNumber,
+                        PatientName = patient.FullName,
+                        PatientGender = patient.Gender,
+                        TestStatus = diagnosisReport.TestStatus,
+                        TestCentre = diagnosisReport.TestCentre,
+                        DateTested = diagnosisReport.DateTested
+                    };
+
+                    diagnosisReportsVMs.Add(diagnosisReportVM);
+                }
+                else
+                {
+                    // Add default patient bio
+                    var diagnosisReportVM = new DiagnosisReportViewModel
+                    {
+                        PatientId = patient.ID,
+                        PatientGender = patient.Gender,
+                        PatientName = patient.FullName,
+                        PatientIdNumber = patient.IdNumber
+                    };
+                    diagnosisReportsVMs.Add(diagnosisReportVM);
+                }
+            }
+
+            return diagnosisReportsVMs;
+        }
     }
 }

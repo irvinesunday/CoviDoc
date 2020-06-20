@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static CoviDoc.Models.Location;
 
 namespace CoviDoc.Models.Mocks
 {
@@ -13,8 +14,8 @@ namespace CoviDoc.Models.Mocks
     {
         private const string countiesFilePath = ".//Resources//Counties.json";
         private const string countriesFilePath = ".//Resources//Countries.json";
-        private List<Location.County> _counties;
-        private Location.Country _country;
+        private List<County> _counties;
+        private string[] _countries;
 
         public MockLocationRepository()
         {
@@ -22,41 +23,53 @@ namespace CoviDoc.Models.Mocks
             FetchCountries();
         }
 
-        public IEnumerable<SelectListItem> GetCountries()
+        //public IEnumerable<SelectListItem> GetCountries()
+        //{
+        //    List<SelectListItem> counties = _countries.OrderBy(n => n)
+        //                                             .Select(n =>
+        //                                             new SelectListItem
+        //                                             {
+        //                                                 Value = n,
+        //                                                 Text = n
+        //                                             }).ToList();
+        //    var countyTip = new SelectListItem()
+        //    {
+        //        Value = null,
+        //        Text = "-- Select Country of Nationality --"
+        //    };
+        //    counties.Insert(0, countyTip);
+        //    return new SelectList(counties, "Value", "Text");
+        //}
+
+        public string[] GetCountries()
         {
-            List<SelectListItem> counties = _country.Countries.OrderBy(n => n)
-                                                     .Select(n =>
-                                                     new SelectListItem
-                                                     {
-                                                         Value = n,
-                                                         Text = n
-                                                     }).ToList();
-            var countyTip = new SelectListItem()
-            {
-                Value = null,
-                Text = "-- Select Country of Nationality --"
-            };
-            counties.Insert(0, countyTip);
-            return new SelectList(counties, "Value", "Text");
+            return _countries;
         }
 
-        public IEnumerable<SelectListItem> GetCounties()
+        public List<County> GetCounties()
         {
-            List<SelectListItem> counties = _counties.OrderBy(n => n.CountyId)
-                                                     .Select(n =>
-                                                     new SelectListItem
-                                                     {
-                                                         Value = n.CountyName,
-                                                         Text = n.CountyName
-                                                     }).ToList();
-            var countyTip = new SelectListItem()
-            {
-                Value = null,
-                Text = "-- Select County --"
-            };
-            counties.Insert(0, countyTip);
-            return new SelectList(counties, "Value", "Text");
+            return _counties;
         }
+
+        //public IEnumerable<SelectListItem> GetCounties()
+        //{
+        //    List<SelectListItem> counties = _counties.OrderBy(n => n.CountyId)
+        //                                             .Select(n =>
+        //                                             new SelectListItem
+        //                                             {
+        //                                                 Value = n.CountyName,
+        //                                                 Text = n.CountyName
+        //                                             }).ToList();
+        //    var countyTip = new SelectListItem()
+        //    {
+        //        Value = null,
+        //        Text = "-- Select County --"
+        //    };
+        //    counties.Insert(0, countyTip);
+        //    return new SelectList(counties, "Value", "Text");
+        //}
+
+
 
         public IEnumerable<SelectListItem> GetConstituencies()
         {
@@ -84,7 +97,7 @@ namespace CoviDoc.Models.Mocks
                                                                        .Select(n =>
                                                                             new SelectListItem
                                                                             {
-                                                                                Value = n.Constituencyid,
+                                                                                Value = n.ConstituencyId,
                                                                                 Text = n.ConstituencyName
                                                                             }).ToList();
                     return new SelectList(constituencies, "Value", "Text");
@@ -114,7 +127,7 @@ namespace CoviDoc.Models.Mocks
 
                 if (county != null)
                 {
-                    var constituency = county.Constituencies.FirstOrDefault(x => x.Constituencyid == constituencyId);
+                    var constituency = county.Constituencies.FirstOrDefault(x => x.ConstituencyId == constituencyId);
 
                     if (constituency != null)
                     {
@@ -136,7 +149,7 @@ namespace CoviDoc.Models.Mocks
         private void FetchCounties()
         {
             string jsonString = ReadFromFile(countiesFilePath).GetAwaiter().GetResult();
-            _counties = JsonConvert.DeserializeObject<List<Location.County>>(jsonString);
+            _counties = JsonConvert.DeserializeObject<List<County>>(jsonString);
         }
 
         private void FetchCountries()
@@ -145,7 +158,7 @@ namespace CoviDoc.Models.Mocks
             {
 
                 string jsonString = ReadFromFile(countriesFilePath).GetAwaiter().GetResult();
-                _country = JsonConvert.DeserializeObject<Location.Country>(jsonString);
+                _countries = JsonConvert.DeserializeObject<string[]>(jsonString);
             }
             catch (Exception ex)
             {

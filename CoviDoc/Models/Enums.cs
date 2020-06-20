@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace CoviDoc.Models
@@ -10,14 +11,21 @@ namespace CoviDoc.Models
     {
         public enum Gender
         {
+            [EnumMember(Value = "Male")]
             [Display(Name = "Male")]
             Male,
+
+            [EnumMember(Value = "Female")]
             [Display(Name = "Female")]
             Female,
+
+            [EnumMember(Value = "Other")]
             [Display(Name = "Other")]
             Other,
+
+            [EnumMember(Value = "Uknown")]
             [Display(Name = "Uknown")]
-            Uknown,
+            Uknown
         }
 
         public enum TestStatus

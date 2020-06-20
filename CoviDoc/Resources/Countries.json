@@ -1,13 +1,10 @@
-{
-    "Countries":
-    [
-        "Kenya",
-        "Uganda",
-        "Tanzania",
-        "Rwanda",
-        "Burundi",
-        "Ethiopia",
-        "Somalia",
-        "South Sudan"
-    ]
-}
+[
+    "Kenya",
+    "Uganda",
+    "Tanzania",
+    "Rwanda",
+    "Burundi",
+    "Ethiopia",
+    "Somalia",
+    "South Sudan"
+]

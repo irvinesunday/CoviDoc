@@ -16,7 +16,7 @@ namespace CoviDoc.Models
 
         public class County
         {
-            [JsonProperty("ID")]
+            [JsonProperty("CountyId")]
             public int CountyId { get; set; }
             [JsonProperty("CountyName")]
             public string CountyName { get; set; }
@@ -27,7 +27,7 @@ namespace CoviDoc.Models
         public class Constituency
         {
             [JsonIgnore]
-            public string Constituencyid => Helpers.GetConstituencyId(ConstituencyName);
+            public string ConstituencyId => Helpers.GetConstituencyId(ConstituencyName);
             [JsonProperty(PropertyName = "ConstituencyName")]
             public string ConstituencyName { get; set; }
             [JsonProperty(PropertyName = "Wards")]

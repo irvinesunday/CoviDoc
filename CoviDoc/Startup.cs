@@ -20,7 +20,8 @@ using Microsoft.EntityFrameworkCore;
 using FileService;
 using Microsoft.Extensions.Logging;
 using Ngrok.AspNetCore;
-
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace CoviDoc
 {
@@ -43,27 +44,32 @@ namespace CoviDoc
             Configuration.GetSection(nameof(CoviDocConfig)).Bind(covidDocConfig);
             services.AddSingleton(covidDocConfig);
 
-
+            services.AddControllers().AddNewtonsoftJson();
             services.AddControllersWithViews();
             services.AddSingleton<IPatientRepository, MockPatientRepository>();
             services.AddSingleton<ITestCentreRepository, MockTestCentreRepository>();
             services.AddSingleton<ILocationRepository, MockLocationRepository>();
             services.AddSingleton<IFileUtility, DiskFileUtility>();
             services.AddSingleton<IDiagnosisReportRepository, MockDiagnosisReportRepository>();
+            services.AddSingleton<IHealthCertificateRepository, MockHealthCertificateRepository>();
 
-            services.AddSingleton<SmsMessageOptions>(provider =>
+            services.AddSingleton(provider =>
             {
-                if (_environment.IsDevelopment())
-                {
-                    var smsMessageOptions = new SmsMessageOptions("sandbox", Constants.SandboxApiHostUri, "AFRICASTKNG");
-                    return smsMessageOptions;
-                }
-                else
-                {
-                    var config = provider.GetRequiredService<CoviDocConfig>();
-                    var smsMessageOptions = new SmsMessageOptions(config.ATUserName, Constants.LiveApiHostUri, config.KeyWord);
-                    return smsMessageOptions;
-                }
+                //if (_environment.IsDevelopment())
+                //{
+                //    var smsMessageOptions = new SmsMessageOptions("sandbox", Constants.SandboxApiHostUri, "AFRICASTKNG");
+                //    return smsMessageOptions;
+                //}
+                //else
+                //{
+                // Uncomment for live
+                //var config = provider.GetRequiredService<CoviDocConfig>();
+                //var smsMessageOptions = new SmsMessageOptions(config.ATUserName, Constants.LiveApiHostUri, config.KeyWord);
+                //return smsMessageOptions;
+                //}
+
+                var smsMessageOptions = new SmsMessageOptions("sandbox", Constants.SandboxApiHostUri, "AFRICASTKNG");
+                return smsMessageOptions;
             });
 
             services.AddHttpClient<AfricasTalkingGateway>()
@@ -131,6 +137,11 @@ namespace CoviDoc
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "QRCodes")),
+                RequestPath = "/MyCovid19Certificate"
+            });
 
             app.UseRouting();
 
@@ -140,7 +151,7 @@ namespace CoviDoc
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Patients}/{action=Index}/{id?}");
+                    pattern: "{controller=Patient}/{action=Index}/{id?}");
             });
         }
     }

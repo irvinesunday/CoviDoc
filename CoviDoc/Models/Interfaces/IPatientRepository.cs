@@ -9,9 +9,10 @@ namespace CoviDoc.Models.Interfaces
     {
         Task AddPatient(Patient patient);
         Task UpdatePatient(Patient patient);
+        Task<List<Patient>> GetPatients(string idNumber, string mobileNumber);
         Task<List<Patient>> GetPatients(string idNumber);
         Task<List<Patient>> GetPatients();
         Task<Patient> GetPatient(Guid? patientId);
-        Task DeactivatePatient(Patient patient);
+        Task DeactivatePatient(Guid? patientId);
     }
 }

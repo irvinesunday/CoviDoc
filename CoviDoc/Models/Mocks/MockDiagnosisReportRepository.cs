@@ -11,7 +11,7 @@ namespace CoviDoc.Models.Mocks
     public class MockDiagnosisReportRepository : IDiagnosisReportRepository
     {
         private const string diagnosisReportFilePath = ".//Resources//MockDiagnosisReports.json";
-        private List<DiagnosisReport> _diagnosisReports;
+        private List<DiagnosisReport> _diagnosisReports = new List<DiagnosisReport>();
         private readonly IFileUtility _fileUtility;
 
         public MockDiagnosisReportRepository(IFileUtility fileUtility)
@@ -32,7 +32,12 @@ namespace CoviDoc.Models.Mocks
 
         public async Task<List<DiagnosisReport>> GetDiagnosisReports()
         {
-            return _diagnosisReports.OrderByDescending(x => x.DateTested).ToList();
+            // Get the first instances of the patient results
+            var diagnosisReports = _diagnosisReports.OrderByDescending(x => x.DateTested)
+                                                    .GroupBy(x => x.PatientId)
+                                                    .Select(x => x.First())
+                                                    .ToList();
+            return diagnosisReports;
         }
 
         public async Task<DiagnosisReport> GetDiagnosisReport(Patient patient)

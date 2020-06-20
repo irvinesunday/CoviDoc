@@ -13,7 +13,7 @@ namespace CoviDoc.Models.Mocks
     {
         private readonly IFileUtility _fileUtility;
         private const string patientsFilePath = ".//Resources//MockPatients.json";
-        private List<Patient> _patients;
+        private List<Patient> _patients = new List<Patient>();
 
         public MockPatientRepository(IFileUtility fileUtility)
         {
@@ -23,11 +23,11 @@ namespace CoviDoc.Models.Mocks
 
         public async Task AddPatient(Patient patient)
         {
-            bool adultExists = _patients.Exists(p => p.IdNumber.Equals(patient.IdNumber) && p.IsAdult == true);
+            var existingAdultPatient = _patients.FirstOrDefault(p => p.IdNumber.Equals(patient.IdNumber) && p.IsAdult == true);
 
-            if (patient.IsAdult && adultExists)
+            if (patient.IsAdult && existingAdultPatient != null)
             {
-                throw new InvalidOperationException($"An adult patient is already registered with the Id/Passport number. {patient.IdNumber} - {patient.FullName}");
+                throw new InvalidOperationException($"An adult patient is already registered with the provided Id/Passport number. {existingAdultPatient.IdNumber} - {existingAdultPatient.FullName}");
             }
 
             int index = _patients.FindIndex(p => p.IdNumber.Equals(patient.IdNumber) &&
@@ -39,6 +39,12 @@ namespace CoviDoc.Models.Mocks
             if (index == -1) // patient doesn't exist
             {
                 _patients.Add(patient);
+                if (!patient.IsAdult)
+                {
+                    // Add child Id to existing adult patient
+                    existingAdultPatient.ChildrenIds.Add(patient.ID);
+                }
+
                 await PostPatients(_patients);
             }
             else
@@ -58,7 +64,20 @@ namespace CoviDoc.Models.Mocks
         public async Task<List<Patient>> GetPatients(string idNumber)
         {
             // Patients with matching IdNumbers could be parent/child
-            return _patients.FindAll(p => p.IdNumber.Equals(idNumber) && p.IsActive)
+            return _patients.Where(p => p.IdNumber.Equals(idNumber) && p.IsActive)
+                            .OrderByDescending(p => p.DateRegistered)
+                            .ToList();
+        }
+
+        public async Task<List<Patient>> GetPatients(string idNumber, string mobileNumber)
+        {
+            if (string.IsNullOrEmpty(idNumber) && string.IsNullOrEmpty(mobileNumber))
+            {
+                return null;
+            }
+
+            // Patients with matching IdNumbers could be parent/child
+            return _patients.Where(p => p.IdNumber.Equals(idNumber) && p.MobileNumber.Equals(mobileNumber) && p.IsActive)
                             .OrderByDescending(p => p.DateRegistered)
                             .ToList();
         }
@@ -74,7 +93,7 @@ namespace CoviDoc.Models.Mocks
         {
             int index = _patients.FindIndex(p => p.ID.Equals(patient.ID) && p.IsActive);
 
-            // Check that we are not updating to an already existing Id/Passport Number
+            // Check that we are not updating to an already existing Id/Passport Number if patient is adult
             bool adultExists = _patients.Exists(p => p.IdNumber.Equals(patient.IdNumber, StringComparison.OrdinalIgnoreCase) &&
                                                 p.IsAdult == true && p.ID != patient.ID);
 
@@ -82,7 +101,7 @@ namespace CoviDoc.Models.Mocks
             bool hasParent = _patients.Exists(p => p.IdNumber.Equals(patient.IdNumber, StringComparison.OrdinalIgnoreCase) &&
                                              p.IsAdult == true);
 
-            if (!adultExists || !hasParent)
+            if ((adultExists && patient.IsAdult) || !hasParent)
             {
                 throw new InvalidOperationException();
             }
@@ -99,11 +118,11 @@ namespace CoviDoc.Models.Mocks
             }
         }
 
-        public async Task DeactivatePatient(Patient patient)
+        public async Task DeactivatePatient(Guid? patientId)
         {
-            int index = _patients.FindIndex(p => p.ID.Equals(patient.ID));
+            var patient = _patients.FirstOrDefault(p => p.ID.Equals(patientId));
 
-            if (index > -1)
+            if (patient != null)
             {
                 patient.IsActive = false;
             }

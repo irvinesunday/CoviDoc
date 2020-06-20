@@ -1,6 +1,6 @@
 [
     {
-        "ID": "47",
+        "CountyId": "47",
         "CountyName": "Nairobi",
         "Constituencies":
         [
@@ -34,7 +34,7 @@
         ]
       },
       {
-        "ID": "1",
+        "CountyId": "1",
         "CountyName": "Mombasa",
         "Constituencies":
         [

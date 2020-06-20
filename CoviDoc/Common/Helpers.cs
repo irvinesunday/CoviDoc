@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Converters;
 using System;
+using System.Linq;
 
 namespace CoviDoc.Common
 {
@@ -36,13 +37,34 @@ namespace CoviDoc.Common
                 return null;
             }
 
+            string newMobileNumber;
             if (mobileNumber.StartsWith('+'))
             {
                 // Remove country code if exists
-                return $"0{mobileNumber.Remove(0, countryCode.Length)}";
+                newMobileNumber = $"0{mobileNumber.Remove(0, countryCode.Length)}";
+                return newMobileNumber;
             }
-            // Add country code if none exists
-            return $"{countryCode}{mobileNumber.Remove(0, 1)}";
+            else if(mobileNumber.StartsWith('0'))
+            {
+                // Add country code if none exists
+                newMobileNumber = $"{countryCode}{mobileNumber.Remove(0, 1)}";
+                return newMobileNumber;
+            }
+            else
+            {
+                // Add country code if none exists
+                newMobileNumber = $"{countryCode}{mobileNumber}";
+                return newMobileNumber;
+            }
         }
+
+        public static string GenerateCertificateId(int length)
+        {
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
     }
 }

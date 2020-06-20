@@ -35,8 +35,8 @@
               "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\DiskFileUtility\\FileService.csproj": {
                 "projectPath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\DiskFileUtility\\FileService.csproj"
               },
-              "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\MessagingService.csproj": {
-                "projectPath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\MessagingService.csproj"
+              "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\EmailService.csproj": {
+                "projectPath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\EmailService.csproj"
               }
             }
           }
@@ -50,19 +50,23 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
+            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
+              "target": "Package",
+              "version": "[3.1.4, )"
+            },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[3.1.2, )"
+              "version": "[3.1.4, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[3.1.2, )"
+              "version": "[3.1.4, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[3.1.2, )"
+              "version": "[3.1.4, )"
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
@@ -71,6 +75,18 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[12.0.3, )"
+            },
+            "Ngrok.AspNetCore": {
+              "target": "Package",
+              "version": "[2.0.0-alpha1, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[4.7.0, )"
+            },
+            "System.Runtime": {
+              "target": "Package",
+              "version": "[4.3.1, )"
             }
           },
           "imports": [
@@ -155,12 +171,12 @@
         }
       }
     },
-    "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\MessagingService.csproj": {
+    "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\EmailService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\MessagingService.csproj",
-        "projectName": "MessagingService",
-        "projectPath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\MessagingService.csproj",
+        "projectUniqueName": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\EmailService.csproj",
+        "projectName": "EmailService",
+        "projectPath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\EmailService.csproj",
         "packagesPath": "C:\\Users\\v-irsund\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\v-irsund\\Desktop\\LABS\\CoviDocRepo\\MessagingService\\obj\\",
         "projectStyle": "PackageReference",
@@ -193,6 +209,12 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[3.1.5, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

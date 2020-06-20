@@ -1,305 +1,239 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using CoviDoc.Common;
 using CoviDoc.Models;
 using CoviDoc.Models.Interfaces;
 using CoviDoc.ViewModels;
-using CoviDoc.Common;
 using MessagingService;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace CoviDoc.Controllers
 {
-    public class PatientsController : Controller
+    //[Route("api/[controller]")]
+    [ApiController]
+    public class PatientsController : ControllerBase
     {
+
+        private readonly string _emailPassword;
+        private readonly string _emailUserName;
+        readonly string _emailFrom;
         readonly IPatientRepository _patientRepository;
-        readonly ITestCentreRepository _testCentreRepository;
-        readonly ILocationRepository _locationRepository;
-        readonly IDiagnosisReportRepository _diagnosisReportRepository;
+        private IWebHostEnvironment _env;
+        private const string QrCodeFolderName = "QRCodes";
 
         public PatientsController(IPatientRepository patientRepository,
-                                 ITestCentreRepository testCentreRepository,
-                                 ILocationRepository locationRepository,
-                                 IDiagnosisReportRepository diagnosisReportRepository)
+                                  IConfiguration configuration,
+                                  IWebHostEnvironment env)
         {
             _patientRepository = patientRepository;
-            _testCentreRepository = testCentreRepository;
-            _locationRepository = locationRepository;
-            _diagnosisReportRepository = diagnosisReportRepository;
+            _emailFrom = configuration["EmailConfigs:RegistrationsEmailAddresss"];
+            _emailPassword = configuration["EmailConfigs:Password"];
+            _emailUserName = configuration["EmailConfigs:UserName"];
+            _env = env;
         }
 
-        // GET: Patients
-        public async Task<IActionResult> Index(string idNumber, string name)
+        [HttpGet]
+        [Route("api/[controller]/{patientId}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> GetPatientsAsync(Guid patientId)
         {
-            IEnumerable<Patient> patients = await _patientRepository.GetPatients();
-
-            if(!string.IsNullOrEmpty(idNumber))
+            if (patientId == Guid.Empty)
             {
-                patients = patients.Where(p => p.IdNumber.Equals(idNumber, StringComparison.OrdinalIgnoreCase));
+                return NotFound();
+            }
+
+            var patient = await _patientRepository.GetPatient(patientId);
+
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(patient);
+
+        }
+
+        // GET: api/Patients
+        [HttpGet]
+        [Route("api/[controller]")]
+        [Produces("application/json")]
+        public async Task<IActionResult> GetPatientsAsync(string idNumber, string name)
+        {
+            if (!string.IsNullOrEmpty(idNumber) && !string.IsNullOrEmpty(name))
+            {
+                return BadRequest();
+            }
+
+            List<Patient> patients = await _patientRepository.GetPatients();
+
+            if (!string.IsNullOrEmpty(idNumber))
+            {
+                patients = patients.Where(p => p.IdNumber.Equals(idNumber, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             if (!string.IsNullOrEmpty(name))
             {
-                patients = patients.Where(p => p.FullName.Contains(name, StringComparison.OrdinalIgnoreCase));
+                patients = patients.Where(p => p.FullName.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            return View(patients);
+            return Ok(patients);
         }
 
-        // GET: Patients/Details/5
-        public async Task<IActionResult> Details(Guid id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var patient = await _patientRepository.GetPatient(id);
-            if (patient == null)
-            {
-                return NotFound();
-            }
-
-            DiagnosisReport diagnosisReport = await _diagnosisReportRepository.GetDiagnosisReport(patient);
-            TestCentre testCentre = null;
-
-            if (diagnosisReport != null)
-            {
-                testCentre = _testCentreRepository.GetTestCentre(diagnosisReport.TestCentreId);
-            }
-
-            PatientViewModel patientViewModel = new PatientViewModel()
-            {
-                Patient = patient,
-                DiagnosisReport = diagnosisReport ?? new DiagnosisReport(),
-                TestCentre = testCentre
-            };
-
-            return View(patientViewModel);
-        }
-
-        // GET: Patients/Create
-        public IActionResult Create()
-        {
-            PatientViewModel patientCreateViewModel = new PatientViewModel()
-            {
-                Countries = _locationRepository.GetCountries(),
-                Counties = _locationRepository.GetCounties(),
-                Constituencies = _locationRepository.GetConstituencies(),
-                Wards = _locationRepository.GetWards()
-            };
-
-            return View(patientCreateViewModel);
-        }
-
-        public ActionResult GetConstituencies(string CountyName)
-        {
-            if (!string.IsNullOrEmpty(CountyName))
-            {
-                IEnumerable<SelectListItem> constituencies = _locationRepository.GetConstituencies(CountyName);
-                return Json(constituencies);
-            }
-            return null;
-        }
-
-        public ActionResult GetWards(string CountyName, string constituencyId)
-        {
-            if (!string.IsNullOrEmpty(CountyName) && !string.IsNullOrEmpty(constituencyId))
-            {
-                IEnumerable<SelectListItem> wards = _locationRepository.GetWards(CountyName, constituencyId);
-                return Json(wards);
-            }
-            return null;
-        }
-
-        // POST: Patients/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/Patients
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FirstName,MiddleName,LastName,IdNumber,DoB,Gender,Nationality,MobileNumber,County,Constituency,Ward")] Patient patient)
+        [Route("api/[controller]")]
+        public async Task<IActionResult> PostPatientAsync([FromBody] Patient patient)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (patient != null)
                 {
                     patient.ID = Guid.NewGuid();
+                    patient.DateRegistered = DateTime.UtcNow.AddHours(3);
                     patient.MobileNumber = Helpers.FormatMobileNumber(patient.MobileNumber);
                     patient.IsAdult = Helpers.IsAdult(patient.DoB);
-                    patient.DateRegistered = DateTime.Now;
+                   // await _patientRepository.AddPatient(patient);
 
-                    await _patientRepository.AddPatient(patient);
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest();
-                }
-            }
+                    // Send Email to patient, if has email address
+                    string emailBody = GenerateEmailBody(patient, Request);
 
-            PatientViewModel patientViewModel = new PatientViewModel()
-            {
-                Countries = _locationRepository.GetCountries(),
-                Counties = _locationRepository.GetCounties(),
-                Constituencies = _locationRepository.GetConstituencies(),
-                Wards = _locationRepository.GetWards()
-            };
-
-            return View(patientViewModel);
-        }
-
-        // GET: Patients/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var patient = await _patientRepository.GetPatient(id);
-            if (patient == null)
-            {
-                return NotFound();
-            }
-
-            PatientViewModel patientViewModel = new PatientViewModel()
-            {
-                Patient = patient,
-                Countries = _locationRepository.GetCountries(),
-                Counties = _locationRepository.GetCounties(),
-                Constituencies = _locationRepository.GetConstituencies(patient.County),
-                Wards = _locationRepository.GetWards(patient.County, Helpers.GetConstituencyId(patient.Constituency))
-            };
-
-            return View(patientViewModel);
-        }
-
-        // POST: Patients/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id,
-                                             [Bind("ID,FirstName,MiddleName,LastName,IdNumber,DoB,Gender,Nationality,MobileNumber,County,Constituency,Ward,DateRegistered")] Patient patient)
-        {
-            if (id != patient.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    patient.MobileNumber = Helpers.FormatMobileNumber(patient.MobileNumber);
-                    patient.IsAdult = Helpers.IsAdult(patient.DoB);
-                    await _patientRepository.UpdatePatient(patient);
-                }
-                catch (ArgumentNullException)
-                {
-                    return NotFound();
-                }
-                catch (InvalidOperationException)
-                {
-                    return BadRequest();
-                }
-                return RedirectToAction(nameof(Index));
-            }
-
-            PatientViewModel patientViewModel = new PatientViewModel()
-            {
-                Patient = patient,
-                Countries = _locationRepository.GetCountries(),
-                Counties = _locationRepository.GetCounties(),
-                Constituencies = _locationRepository.GetConstituencies(patient.County),
-                Wards = _locationRepository.GetWards(patient.County, Helpers.GetConstituencyId(patient.Constituency))
-            };
-
-            return View(patientViewModel);
-        }
-
-        public async Task<IActionResult> Test(Guid id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var patient = await _patientRepository.GetPatient(id);
-            if (patient == null)
-            {
-                return NotFound();
-            }
-
-            PatientTestViewModel patientTestViewModel = new PatientTestViewModel()
-            {
-                PatientId = patient.ID,
-                PatientName = patient.FullName,
-                PatientIdNumber = patient.IdNumber,
-                PatientGender = patient.Gender,
-                TestCentres = _testCentreRepository.GetTestCentres()
-            };
-
-            return View(patientTestViewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Test([Bind("PatientId,TestCentreId,TestStatus")] PatientTestViewModel patientTestViewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    DiagnosisReport diagnosisReport = new DiagnosisReport
+                    if (emailBody != null)
                     {
-                        DiagnosisReportId = Guid.NewGuid(),
-                        PatientId = patientTestViewModel.PatientId,
-                        TestStatus = patientTestViewModel.TestStatus,
-                        TestCentreId = patientTestViewModel.TestCentreId,
-                        DateTested = DateTime.Now
-                    };
+                        Email email = new Email
+                        {
+                            From = _emailFrom,
+                            To = patient.EmailAddress,
+                            Subject = $"Registration Successful - {patient.FullName}",
+                            Body = emailBody
+                        };
+                        await EmailProcessor.SendEmailAsync(email, _emailUserName, _emailPassword);
+                    }
 
-                    await _diagnosisReportRepository.AddDiagnosisReport(diagnosisReport);
+                    string patientUri = string.Format("{0}://{1}{2}/{3}", Request.Scheme, Request.Host, Request.Path.Value, patient.ID.ToString());
 
-                    return RedirectToAction(nameof(Index));
+                    return Created(patientUri, patient);
                 }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                return BadRequest();
             }
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                return new JsonResult(ex.Message) { StatusCode = StatusCodes.Status404NotFound };
+            }
         }
 
-        // GET: Patients/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        private string GenerateEmailBody(Patient patient, HttpRequest request)
         {
-            if (id == null)
+            var certificateUrl = string.Format("{0}://{1}/api/DiagnosisReports/{2}", request.Scheme, request.Host, patient.ID.ToString());
+            var qrCodeUrl = $"https://chart.googleapis.com/chart?cht=qr&chs={500}x{500}&chl={certificateUrl}";
+
+            WebRequest webRequest = WebRequest.Create(qrCodeUrl);
+            using WebResponse webResponse = webRequest.GetResponse();
+            using Stream remoteStream = webResponse.GetResponseStream();
+            using StreamReader streamReader = new StreamReader(remoteStream);
+
+            var qrCodeImage = Image.FromStream(remoteStream);
+            var qrCodeImageName = $"{patient.ID}.png";
+            var qrCodesPath = Path.Combine(Directory.GetCurrentDirectory(), "QRCodes", qrCodeImageName);
+            qrCodeImage.Save(qrCodesPath);
+
+            if (patient.EmailAddress != null)
             {
-                return NotFound();
+                string body = string.Empty;
+                var imgSource = $"{request.Scheme}://{request.Host}{Url.Content($"~/MyCovid19Certificate/{qrCodeImageName}")}";
+                using (StreamReader reader = new StreamReader("./Resources/RegistrationsTemplate.html"))
+                {
+                    body = reader.ReadToEnd();
+                };
+                body = body.Replace("{PatientFirstName}", patient.FirstName);
+                body = body.Replace("{PatientFullName}", patient.FullName.ToUpper());
+                body = body.Replace("{PatientIdNumber}", patient.IdNumber.ToUpper());
+                body = body.Replace("{RegistrationDate}", patient.DateRegistered.ToString("dddd, dd MMMM yyyy hh:mm tt"));
+                body = body.Replace("{LinkToCertificate}", imgSource.ToString());
+                body = body.Replace("{BaseUrl}", $"{Request.Scheme}://{Request.Host}");
+                body = body.Replace("{QRCode}", imgSource);
+
+                return body;
             }
 
-            var patient = await _patientRepository.GetPatient(id);
+            return null;
+        }
+
+        // PUT: api/patients/5
+        [HttpPut]
+        [Route("api/[controller]/{patientId}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> UpdatePatientAsync(Guid patientId, [FromBody] Patient patient)
+        {
+            if (patient == null || patientId == Guid.Empty)
+            {
+                return BadRequest();
+            }
+            // Check if patient exists
+            var updatedPatient = await _patientRepository.GetPatient(patientId);
+
+            if (updatedPatient == null)
+            {
+                return BadRequest();
+            }
+
+            updatedPatient.Constituency = patient.Constituency ?? updatedPatient.Constituency;
+            updatedPatient.County = patient.County ?? updatedPatient.County;
+            updatedPatient.DoB = patient.DoB;
+            updatedPatient.FirstName = patient.FirstName ?? updatedPatient.FirstName;
+            updatedPatient.Gender = patient.Gender;
+            updatedPatient.IdNumber = patient.IdNumber ?? updatedPatient.IdNumber;
+            updatedPatient.LastName = patient.LastName ?? updatedPatient.LastName;
+            updatedPatient.MiddleName = patient.MiddleName ?? updatedPatient.MiddleName;
+            updatedPatient.MobileNumber = patient.MobileNumber ?? updatedPatient.MobileNumber;
+            updatedPatient.Nationality = patient.Nationality;
+            updatedPatient.Ward = patient.Ward;
+
+            await _patientRepository.UpdatePatient(updatedPatient);
+
+            return Ok(updatedPatient);
+        }
+
+        // DELETE: api/patients/5
+        [HttpDelete]
+        [Route("api/[controller]/{patientId}")]
+        public async Task<IActionResult> DeactivatePatientAsync(Guid patientId)
+        {
+            if (patientId == Guid.Empty)
+            {
+                return BadRequest();
+            }
+            // Check if patient exists
+            var patient = await _patientRepository.GetPatient(patientId);
+            ResponseViewModel response;
 
             if (patient == null)
             {
-                return NotFound();
+                response = new ResponseViewModel
+                {
+                    Code = StatusCodes.Status404NotFound,
+                    Message = "Patient not found."
+                };
+                return NotFound(response);
             }
 
-            return View(patient);
-        }
+            await _patientRepository.DeactivatePatient(patientId);
 
-        // POST: Patients/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var patient = await _patientRepository.GetPatient(id);
-            await _patientRepository.DeactivatePatient(patient);
-            return RedirectToAction(nameof(Index));
+            response = new ResponseViewModel
+            {
+                Code = StatusCodes.Status204NoContent,
+                Message = "Patient deleted successfully."
+            };
+
+            return  new JsonResult(response) { StatusCode = StatusCodes.Status204NoContent };
         }
     }
 }
