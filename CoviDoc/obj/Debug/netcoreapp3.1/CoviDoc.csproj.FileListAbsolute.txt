@@ -221,3 +221,4 @@ C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\Covidoc\obj\Debug\netcoreapp3.1\stati
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\Covidoc\obj\Debug\netcoreapp3.1\CoviDoc.dll
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\Covidoc\obj\Debug\netcoreapp3.1\CoviDoc.pdb
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\Covidoc\obj\Debug\netcoreapp3.1\CoviDoc.genruntimeconfig.cache
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\Resources\TestsTemplate.html

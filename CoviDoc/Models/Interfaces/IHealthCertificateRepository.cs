@@ -7,7 +7,8 @@ namespace CoviDoc.Models.Interfaces
 {
     public interface IHealthCertificateRepository
     {
-       Task AddHealthCertificate(HealthCertificate healthCertificate);
-       List<HealthCertificate> GetHealthCertificates(string idNumber, string mobileNumber);
+        Task AddHealthCertificate(HealthCertificate healthCertificate);
+        List<HealthCertificate> GetHealthCertificates(string idNumber, string mobileNumber);
+        public HealthCertificate GetHealthCertificate(Guid patientId);
     }
 }

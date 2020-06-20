@@ -14,6 +14,7 @@ namespace CoviDoc.Models
 {
     public class DiagnosisReportViewModel
     {
+        private string _patientFirstName;
         public Guid PatientId { get; set; }
 
         [Display(Name = "Patient Name")]

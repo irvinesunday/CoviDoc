@@ -18,9 +18,10 @@ namespace CoviDoc.Models
         public string MobileNumber { get; set; }
         public bool IsAdult { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
-        public TestStatus Status { get; set; } = TestStatus.Pending;
-        public string TestCentre { get; set; }
+        public TestStatus TestStatus { get; set; } = TestStatus.Pending;
+        public string TestCentre { get; set; } = "Pending";
         public DateTime TestDate { get; set; }
+        public string BaseUrlLocation { get; set; }
         public List<Guid> ChildrenIds { get; set; }
     }
 }

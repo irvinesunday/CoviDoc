@@ -61,6 +61,23 @@ namespace CoviDoc.Models.Mocks
             }
         }
 
+        public HealthCertificate GetHealthCertificate(Guid patientId)
+        {
+            if (patientId == Guid.Empty)
+            {
+                return null;
+            }
+
+            try
+            {
+                return _healthCertificates.FirstOrDefault(x => x.PatientId == patientId);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public async Task PostHealthCertificates(List<HealthCertificate> healthCertificates)
         {
             try

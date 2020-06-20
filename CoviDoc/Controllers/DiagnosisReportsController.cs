@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using CoviDoc.Common;
 using CoviDoc.Models;
 using CoviDoc.Models.Interfaces;
+using CoviDoc.ViewModels;
+using MessagingService;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace CoviDoc.Controllers
 {
@@ -17,14 +24,21 @@ namespace CoviDoc.Controllers
         readonly IPatientRepository _patientRepository;
         readonly IDiagnosisReportRepository _diagnosisReportRepository;
         readonly IHealthCertificateRepository _healthCertificateRepository;
+        readonly string _emailFrom;
+        private readonly string _emailPassword;
+        private readonly string _emailUserName;
 
         public DiagnosisReportsController(IPatientRepository patientRepository,
                                         IDiagnosisReportRepository diagnosisReportRepository,
-                                        IHealthCertificateRepository healthCertificateRepository)
+                                        IHealthCertificateRepository healthCertificateRepository,
+                                        IConfiguration configuration)
         {
             _patientRepository = patientRepository;
             _diagnosisReportRepository = diagnosisReportRepository;
             _healthCertificateRepository = healthCertificateRepository;
+            _emailFrom = configuration["EmailConfigs:CertificateEmailAddress"];
+            _emailPassword = configuration["EmailConfigs:Password"];
+            _emailUserName = configuration["EmailConfigs:UserName"];
         }
 
         // GET: api/DiagnosisReports
@@ -170,23 +184,27 @@ namespace CoviDoc.Controllers
                 await _diagnosisReportRepository.AddDiagnosisReport(diagnosisReport);
                 string diagnosisReportUri = string.Format("{0}://{1}{2}/{3}", Request.Scheme, Request.Host, Request.Path.Value, diagnosisReport.DiagnosisReportId.ToString());
 
-                // Create Health Certificate
-                var healthCertificate = new HealthCertificate
-                {
-                    DiagnosisReportId = diagnosisReport.DiagnosisReportId,
-                    PatientId = diagnosisReportVM.PatientId,
-                    IdNumber = diagnosisReportVM.PatientIdNumber,
-                    MobileNumber = diagnosisReportVM.MobileNumber,
-                    IsAdult = diagnosisReportVM.IsAdult,
-                    Name = diagnosisReportVM.PatientName,
-                    Status = diagnosisReportVM.TestStatus,
-                    TestCentre = diagnosisReportVM.TestCentre,
-                    TestDate = diagnosisReport.DateTested,
-                    CertificateId = $"{diagnosisReportVM.PatientIdNumber}-{Helpers.GenerateCertificateId(5)}"
-                };
-                await _healthCertificateRepository.AddHealthCertificate(healthCertificate);
+                var patient = await _patientRepository.GetPatient(diagnosisReport.PatientId);
 
-                // Send Test success alert
+                var healthCertificate = _healthCertificateRepository.GetHealthCertificate(patient.ID);
+
+                healthCertificate.TestStatus = diagnosisReportVM.TestStatus;
+                healthCertificate.TestCentre = diagnosisReportVM.TestCentre;
+                healthCertificate.TestDate = diagnosisReport.DateTested;
+
+                string emailBody = GenerateEmailBody(healthCertificate, patient);
+
+                if (emailBody != null)
+                {
+                    Email email = new Email
+                    {
+                        From = _emailFrom,
+                        To = patient.EmailAddress,
+                        Subject = $"COVID-19 Digital Health Certificate - {diagnosisReportVM.PatientName}",
+                        Body = emailBody
+                    };
+                    await EmailProcessor.SendEmailAsync(email, _emailUserName, _emailPassword);
+                }
 
                 return Created(diagnosisReportUri, diagnosisReport);
             }
@@ -274,6 +292,32 @@ namespace CoviDoc.Controllers
             }
 
             return diagnosisReportsVMs;
+        }
+
+        private string GenerateEmailBody(HealthCertificate healthCertificate, Patient patient)
+        {
+            if (patient.EmailAddress != null)
+            {
+                string body = string.Empty;
+                using (StreamReader reader = new StreamReader("./Resources/TestsTemplate.html"))
+                {
+                    body = reader.ReadToEnd();
+                };
+                body = body.Replace("{PatientFirstName}", patient.FirstName);
+                body = body.Replace("{PatientFullName}", patient.FullName.ToUpper());
+                body = body.Replace("{PatientIdNumber}", patient.IdNumber);
+                body = body.Replace("{TestStatus}", healthCertificate.TestStatus.ToString());
+                body = body.Replace("{TestDate}", healthCertificate.TestDate.ToString("dddd, dd MMMM yyyy hh:mm tt"));
+                body = body.Replace("{TestCentre}", healthCertificate.TestCentre.ToString());
+                body = body.Replace("{LinkToCertificate}", healthCertificate.BaseUrlLocation);
+                body = body.Replace("{CertificateId}", healthCertificate.CertificateId);
+                body = body.Replace("{BaseUrl}", $"{Request.Scheme}://{Request.Host}");
+                body = body.Replace("{QRCode}", healthCertificate.BaseUrlLocation);
+
+                return body;
+            }
+
+            return null;
         }
     }
 }

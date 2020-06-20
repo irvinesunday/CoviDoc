@@ -11,22 +11,29 @@
     <span style="font-family: Arial; font-size: 10pt">
         Hello <b>{PatientFirstName}</b>,<br />
         <br />
-        Your details have successfully been registered with the Ministry of Health.<br />
+        Your COVID-19 test results are ready.<br />
         <!--<a style="color: #22BCE5" href="{Url}">{Title}</a><br />-->
         <br />
         <b>Name:</b> {PatientFullName}
         <br />
         <b>ID/Passport Number:</b> {PatientIdNumber}
         <br />
-        <b>Date of Registration:</b> {RegistrationDate}
+        <b>Test Result:</b> {TestStatus}
         <br />
+        <b>Date of Test:</b> {TestDate}
+        <br />
+        <b>Test Centre:</b> {TestCentre}
+        <br />
+        <br />
+        The below QR Code is your <b>Digital COVID-19 Certificate</b> which contains the above details.
         <br />
         <img src="{QRCode}" alt="PatientQRCode" width="200" height="200" />
         <br />
+        Certificate ID: {CertificateId}
         <br />
-        The above QR Code is your <b>Digital COVID-19 Certificate</b>.
         <br />
         You can also get it anytime from this link: <a href="{LinkToCertificate}">MyCovid19Certificate</a>.
+        <br />
         <br />
         <br />
         Warm Regards,

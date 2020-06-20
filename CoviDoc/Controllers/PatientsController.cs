@@ -27,18 +27,17 @@ namespace CoviDoc.Controllers
         private readonly string _emailUserName;
         readonly string _emailFrom;
         readonly IPatientRepository _patientRepository;
-        private IWebHostEnvironment _env;
-        private const string QrCodeFolderName = "QRCodes";
+        readonly IHealthCertificateRepository _healthCertificateRepository;
 
         public PatientsController(IPatientRepository patientRepository,
                                   IConfiguration configuration,
-                                  IWebHostEnvironment env)
+                                  IHealthCertificateRepository healthCertificateRepository)
         {
             _patientRepository = patientRepository;
+            _healthCertificateRepository = healthCertificateRepository;
             _emailFrom = configuration["EmailConfigs:RegistrationsEmailAddresss"];
             _emailPassword = configuration["EmailConfigs:Password"];
             _emailUserName = configuration["EmailConfigs:UserName"];
-            _env = env;
         }
 
         [HttpGet]
@@ -101,21 +100,54 @@ namespace CoviDoc.Controllers
                     patient.DateRegistered = DateTime.UtcNow.AddHours(3);
                     patient.MobileNumber = Helpers.FormatMobileNumber(patient.MobileNumber);
                     patient.IsAdult = Helpers.IsAdult(patient.DoB);
-                   // await _patientRepository.AddPatient(patient);
+                    await _patientRepository.AddPatient(patient);
 
-                    // Send Email to patient, if has email address
-                    string emailBody = GenerateEmailBody(patient, Request);
+                    // Create Health Certificate
+                    var qrCodeFileName = $"{patient.ID}.png";
+                    var qrCodeUri = $"{Request.Scheme}://{Request.Host}{Url.Content($"~/MyCovid19Certificate/{qrCodeFileName}")}";
+                    var qrCodeFileLocation = Path.Combine(Directory.GetCurrentDirectory(), "QRCodes", $"{qrCodeFileName}");
+                    var certificateUri = string.Format("{0}://{1}/api/DiagnosisReports/{2}", Request.Scheme, Request.Host, patient.ID.ToString());
 
-                    if (emailBody != null)
+                    // Generate QR Code
+                    var qrCodeUrl = $"https://chart.googleapis.com/chart?cht=qr&chs={500}x{500}&chl={certificateUri}";
+                    WebRequest webRequest = WebRequest.Create(qrCodeUrl);
+                    using WebResponse webResponse = webRequest.GetResponse();
+                    using Stream remoteStream = webResponse.GetResponseStream();
+                    using StreamReader streamReader = new StreamReader(remoteStream);
+
+                    // Save QR code to directory
+                    var qrCodeImage = Image.FromStream(remoteStream);
+                    qrCodeImage.Save(qrCodeFileLocation);
+
+                    // Geneate Health certificate
+                    var healthCertificate = new HealthCertificate
                     {
-                        Email email = new Email
+                        PatientId = patient.ID,
+                        IdNumber = patient.IdNumber,
+                        MobileNumber = patient.MobileNumber,
+                        IsAdult = patient.IsAdult,
+                        Name = patient.FullName,
+                        BaseUrlLocation = qrCodeUri,
+                        CertificateId = $"{patient.IdNumber}-{Helpers.GenerateCertificateId(5)}"
+                    };
+                    await _healthCertificateRepository.AddHealthCertificate(healthCertificate);
+
+                    // Send Email to patient; if has email address
+                    if (patient.EmailAddress != null)
+                    {
+                        string emailBody = GenerateEmailBody(patient, qrCodeUri, qrCodeFileLocation, certificateUri);
+
+                        if (emailBody != null)
                         {
-                            From = _emailFrom,
-                            To = patient.EmailAddress,
-                            Subject = $"Registration Successful - {patient.FullName}",
-                            Body = emailBody
-                        };
-                        await EmailProcessor.SendEmailAsync(email, _emailUserName, _emailPassword);
+                            Email email = new Email
+                            {
+                                From = _emailFrom,
+                                To = patient.EmailAddress,
+                                Subject = $"Registration Successful - {patient.FullName}",
+                                Body = emailBody
+                            };
+                            await EmailProcessor.SendEmailAsync(email, _emailUserName, _emailPassword);
+                        }
                     }
 
                     string patientUri = string.Format("{0}://{1}{2}/{3}", Request.Scheme, Request.Host, Request.Path.Value, patient.ID.ToString());
@@ -130,41 +162,23 @@ namespace CoviDoc.Controllers
             }
         }
 
-        private string GenerateEmailBody(Patient patient, HttpRequest request)
+        private string GenerateEmailBody(Patient patient, string qrCodeUri, string qrCodeFileLocation, string certificateUri)
         {
-            var certificateUrl = string.Format("{0}://{1}/api/DiagnosisReports/{2}", request.Scheme, request.Host, patient.ID.ToString());
-            var qrCodeUrl = $"https://chart.googleapis.com/chart?cht=qr&chs={500}x{500}&chl={certificateUrl}";
+            string body = string.Empty;
 
-            WebRequest webRequest = WebRequest.Create(qrCodeUrl);
-            using WebResponse webResponse = webRequest.GetResponse();
-            using Stream remoteStream = webResponse.GetResponseStream();
-            using StreamReader streamReader = new StreamReader(remoteStream);
-
-            var qrCodeImage = Image.FromStream(remoteStream);
-            var qrCodeImageName = $"{patient.ID}.png";
-            var qrCodesPath = Path.Combine(Directory.GetCurrentDirectory(), "QRCodes", qrCodeImageName);
-            qrCodeImage.Save(qrCodesPath);
-
-            if (patient.EmailAddress != null)
+            using (StreamReader reader = new StreamReader("./Resources/RegistrationsTemplate.html"))
             {
-                string body = string.Empty;
-                var imgSource = $"{request.Scheme}://{request.Host}{Url.Content($"~/MyCovid19Certificate/{qrCodeImageName}")}";
-                using (StreamReader reader = new StreamReader("./Resources/RegistrationsTemplate.html"))
-                {
-                    body = reader.ReadToEnd();
-                };
-                body = body.Replace("{PatientFirstName}", patient.FirstName);
-                body = body.Replace("{PatientFullName}", patient.FullName.ToUpper());
-                body = body.Replace("{PatientIdNumber}", patient.IdNumber.ToUpper());
-                body = body.Replace("{RegistrationDate}", patient.DateRegistered.ToString("dddd, dd MMMM yyyy hh:mm tt"));
-                body = body.Replace("{LinkToCertificate}", imgSource.ToString());
-                body = body.Replace("{BaseUrl}", $"{Request.Scheme}://{Request.Host}");
-                body = body.Replace("{QRCode}", imgSource);
+                body = reader.ReadToEnd();
+            };
+            body = body.Replace("{PatientFirstName}", patient.FirstName);
+            body = body.Replace("{PatientFullName}", patient.FullName.ToUpper());
+            body = body.Replace("{PatientIdNumber}", patient.IdNumber.ToUpper());
+            body = body.Replace("{RegistrationDate}", patient.DateRegistered.ToString("dddd, dd MMMM yyyy hh:mm tt"));
+            body = body.Replace("{LinkToCertificate}", qrCodeUri);
+            body = body.Replace("{BaseUrl}", $"{Request.Scheme}://{Request.Host}");
+            body = body.Replace("{QRCode}", qrCodeUri);
 
-                return body;
-            }
-
-            return null;
+            return body;
         }
 
         // PUT: api/patients/5

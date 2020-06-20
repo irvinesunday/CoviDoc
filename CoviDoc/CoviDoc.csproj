@@ -23,6 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Resources\TestsTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\RegistrationsTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -33,5 +36,9 @@
      <CopyToPublishDirectory>always</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
+
+   <ItemGroup>
+     <Folder Include="QRCodes\" />
+   </ItemGroup>
 
 </Project>
