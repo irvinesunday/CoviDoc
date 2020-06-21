@@ -106,7 +106,7 @@ namespace CoviDoc.Controllers
                     var qrCodeFileName = $"{patient.ID}.png";
                     var qrCodeUri = $"{Request.Scheme}://{Request.Host}{Url.Content($"~/MyCovid19Certificate/{qrCodeFileName}")}";
                     var qrCodeFileLocation = Path.Combine(Directory.GetCurrentDirectory(), "QRCodes", $"{qrCodeFileName}");
-                    var certificateUri = string.Format("{0}://{1}/api/DiagnosisReports/{2}", Request.Scheme, Request.Host, patient.ID.ToString());
+                    var certificateUri = string.Format("{0}://{1}/certificates/details/{2}", Request.Scheme, Request.Host, patient.ID.ToString());
 
                     // Generate QR Code
                     var qrCodeUrl = $"https://chart.googleapis.com/chart?cht=qr&chs={500}x{500}&chl={certificateUri}";
@@ -135,7 +135,7 @@ namespace CoviDoc.Controllers
                     // Send Email to patient; if has email address
                     if (patient.EmailAddress != null)
                     {
-                        string emailBody = GenerateEmailBody(patient, qrCodeUri, qrCodeFileLocation, certificateUri);
+                        string emailBody = GenerateEmailBody(patient, qrCodeUri);
 
                         if (emailBody != null)
                         {
@@ -162,7 +162,7 @@ namespace CoviDoc.Controllers
             }
         }
 
-        private string GenerateEmailBody(Patient patient, string qrCodeUri, string qrCodeFileLocation, string certificateUri)
+        private string GenerateEmailBody(Patient patient, string qrCodeUri)
         {
             string body = string.Empty;
 

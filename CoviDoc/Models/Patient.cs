@@ -35,8 +35,22 @@ namespace CoviDoc.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
+        private string _fullName;
         [Display(Name = "Full Name")]
-        public string FullName => $"{FirstName} {MiddleName} {LastName}";
+        public string FullName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(MiddleName))
+                {
+                    return $"{FirstName} {LastName}";
+                }
+                else
+                {
+                    return $"{FirstName} {MiddleName} {LastName}";
+                }
+            }            
+        }
 
         [Required]
         [Display(Name = "ID/Passport No.")]

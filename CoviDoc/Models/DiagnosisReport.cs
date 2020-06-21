@@ -12,7 +12,7 @@ namespace CoviDoc.Models
         public string TestCentre { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         [Display(Name = "Test Result")]
-        public TestStatus TestStatus { get; set; } = TestStatus.Pending;
+        public TestStatus TestStatus { get; set; } = TestStatus.AwaitingResults;
         [Display(Name = "Date Tested")]
         public DateTime DateTested { get; set; }
     }

@@ -96,5 +96,33 @@
     "TestCentre": "The Agha Khan Hospital",
     "TestStatus": "Negative",
     "DateTested": "2020-06-21T01:29:05.9517999Z"
+  },
+  {
+    "DiagnosisReportId": "6929ae71-1fd7-4935-843b-2dcf3c66230b",
+    "PatientId": "682afd03-84bf-4522-900d-9144f7f6aa50",
+    "TestCentre": "The Agha Khan Hospital",
+    "TestStatus": "Negative",
+    "DateTested": "2020-06-21T02:46:29.4252345Z"
+  },
+  {
+    "DiagnosisReportId": "cf92f76b-ddc5-4506-9734-62cf33dd028e",
+    "PatientId": "682afd03-84bf-4522-900d-9144f7f6aa50",
+    "TestCentre": "The Agha Khan Hospital",
+    "TestStatus": "Negative",
+    "DateTested": "2020-06-21T02:53:12.8283925Z"
+  },
+  {
+    "DiagnosisReportId": "e12bb053-c2fb-4cb7-a016-5c700b66c0a7",
+    "PatientId": "8b2109de-1542-4dba-99ef-4f81b3f52e9b",
+    "TestCentre": "The Agha Khan Hospital",
+    "TestStatus": "Negative",
+    "DateTested": "2020-06-21T02:55:56.5713002Z"
+  },
+  {
+    "DiagnosisReportId": "662c550a-69d4-4497-bd5e-d954bfe0e1b0",
+    "PatientId": "e5b63862-cacf-453c-9157-9e2608bd3c0e",
+    "TestCentre": "The Agha Khan Hospital",
+    "TestStatus": "Negative",
+    "DateTested": "2020-06-21T03:29:42.7256247Z"
   }
 ]

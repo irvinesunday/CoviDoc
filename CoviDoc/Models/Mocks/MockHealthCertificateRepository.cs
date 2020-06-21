@@ -70,11 +70,32 @@ namespace CoviDoc.Models.Mocks
 
             try
             {
-                return _healthCertificates.FirstOrDefault(x => x.PatientId == patientId);
+                return _healthCertificates.LastOrDefault(x => x.PatientId == patientId);
             }
             catch
             {
                 return null;
+            }
+        }
+
+        public async Task UpdateHealthCertificate(HealthCertificate healthCertificate)
+        {
+            if (healthCertificate == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            var index = _healthCertificates.FindIndex(x => x.CertificateId == healthCertificate.CertificateId);
+
+            if (index > -1) // certificate exists
+            {
+                _healthCertificates.RemoveAt(index);
+                _healthCertificates.Insert(index, healthCertificate);
+                await PostHealthCertificates(_healthCertificates);
+            }
+            else
+            {
+                throw new ArgumentNullException();
             }
         }
 

@@ -39,6 +39,7 @@
 
    <ItemGroup>
      <Folder Include="QRCodes\" />
+     <Folder Include="Views\Certificates\" />
    </ItemGroup>
 
 </Project>

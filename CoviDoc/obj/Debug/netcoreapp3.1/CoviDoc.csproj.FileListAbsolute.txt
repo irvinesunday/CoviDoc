@@ -222,3 +222,4 @@ C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\Covidoc\obj\Debug\netcoreapp3.1\CoviD
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\Covidoc\obj\Debug\netcoreapp3.1\CoviDoc.pdb
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\Covidoc\obj\Debug\netcoreapp3.1\CoviDoc.genruntimeconfig.cache
 C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\bin\Debug\netcoreapp3.1\Resources\TestsTemplate.html
+C:\Users\v-irsund\Desktop\LABS\CoviDocRepo\CoviDoc\obj\Debug\netcoreapp3.1\Razor\Views\Certificates\Details.cshtml.g.cs

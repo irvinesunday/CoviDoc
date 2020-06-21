@@ -10,19 +10,22 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace CoviDoc.Controllers
 {
-    public class TestsController : Controller
+    public class CertificatesController : Controller
     {
         readonly IPatientRepository _patientRepository;
         readonly ITestCentreRepository _testCentreRepository;
         readonly IDiagnosisReportRepository _diagnosisReportRepository;
+        readonly IHealthCertificateRepository _healthCertificateRepository;
 
-        public TestsController(IPatientRepository patientRepository,
+        public CertificatesController(IPatientRepository patientRepository,
                                          ITestCentreRepository testCentreRepository,
-                                         IDiagnosisReportRepository diagnosisReportRepository)
+                                         IDiagnosisReportRepository diagnosisReportRepository,
+                                         IHealthCertificateRepository healthCertificateRepository)
         {
             _patientRepository = patientRepository;
             _testCentreRepository = testCentreRepository;
             _diagnosisReportRepository = diagnosisReportRepository;
+            _healthCertificateRepository = healthCertificateRepository;
         }
         public async Task<IActionResult> Index(string idNumber, string name)
         {
@@ -74,18 +77,14 @@ namespace CoviDoc.Controllers
             {
                 return NotFound();
             }
+            var healthCertificate = _healthCertificateRepository.GetHealthCertificate(id);
 
-            var diagnosisReport = await _diagnosisReportRepository.GetDiagnosisReport(id);
-            var patient = await _patientRepository.GetPatient(diagnosisReport.PatientId);
-
-            var diagnosisReportVM = new TestsViewModel
+            if (healthCertificate == null)
             {
-                Patient = await _patientRepository.GetPatient(diagnosisReport.PatientId),
-               // TestCentre = _testCentreRepository.GetTestCentre(diagnosisReport.TestCentreId),
-                DiagnosisReport = diagnosisReport
-            };
+                return NotFound();
+            }
 
-            return View(diagnosisReportVM);
+            return View(healthCertificate);
         }
 
     }

@@ -10,5 +10,6 @@ namespace CoviDoc.Models.Interfaces
         Task AddHealthCertificate(HealthCertificate healthCertificate);
         List<HealthCertificate> GetHealthCertificates(string idNumber, string mobileNumber);
         public HealthCertificate GetHealthCertificate(Guid patientId);
+        Task UpdateHealthCertificate(HealthCertificate healthCertificate);
     }
 }

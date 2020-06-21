@@ -91,6 +91,11 @@ namespace CoviDoc.Models.Mocks
 
         public async Task UpdatePatient(Patient patient)
         {
+            if (patient == null)
+            {
+                throw new InvalidOperationException();
+            }
+
             int index = _patients.FindIndex(p => p.ID.Equals(patient.ID) && p.IsActive);
 
             // Check that we are not updating to an already existing Id/Passport Number if patient is adult

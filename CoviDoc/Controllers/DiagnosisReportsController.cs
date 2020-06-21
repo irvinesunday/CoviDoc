@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using CoviDoc.Common;
 using CoviDoc.Models;
 using CoviDoc.Models.Interfaces;
-using CoviDoc.ViewModels;
 using MessagingService;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
@@ -191,6 +186,8 @@ namespace CoviDoc.Controllers
                 healthCertificate.TestStatus = diagnosisReportVM.TestStatus;
                 healthCertificate.TestCentre = diagnosisReportVM.TestCentre;
                 healthCertificate.TestDate = diagnosisReport.DateTested;
+
+                await _healthCertificateRepository.UpdateHealthCertificate(healthCertificate);
 
                 string emailBody = GenerateEmailBody(healthCertificate, patient);
 

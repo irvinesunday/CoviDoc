@@ -1,0 +1,52 @@
+﻿@model CoviDoc.Models.HealthCertificate
+
+@{
+    ViewData["Title"] = "Health Certificate";
+}
+
+<h4>COVID-19 Digital Health Certificate</h4>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IdNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IdNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TestStatus)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TestStatus)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TestCentre)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TestCentre)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TestDateToString)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TestDateToString)
+        </dd>
+    </dl>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CertificateId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CertificateId)
+        </dd>
+    </dl>
+</div>
